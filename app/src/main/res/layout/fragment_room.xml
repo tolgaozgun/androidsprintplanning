@@ -105,7 +105,7 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/round_rectangle_shape"
         android:fontFamily="@font/roboto"
-        android:text="SHOW RESULTS"
+        android:text="@string/show_results"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

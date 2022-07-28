@@ -14,18 +14,6 @@
         android:theme="@style/Theme.SprintPlanning"
         tools:targetApi="31">
         <activity
-            android:name=".RoomActivity"
-            android:exported="false" />
-        <activity
-            android:name=".room.ShareRoomActivity"
-            android:exported="false" />
-        <activity
-            android:name=".room.JoinRoomActivity"
-            android:exported="false" />
-        <activity
-            android:name=".room.CreateRoomActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

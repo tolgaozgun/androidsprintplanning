@@ -20,13 +20,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.home -> replaceFragment(HomeFragment())
                 R.id.profile -> replaceFragment(ProfileFragment())
                 R.id.settings -> replaceFragment(SettingsFragment())
-
-                else -> {
-
-                }
+                else -> {}
             }
             true
         }
+
+
     }
 
     private fun replaceFragment(fragment: Fragment){

@@ -32,6 +32,10 @@ class JoinRoomFragment : Fragment() {
         binding.imgBackJoinRoom.setOnClickListener{
             goBackFragment()
         }
+        // TODO: Add logic for connecting to a room
+        binding.btnJoinRoomFinal.setOnClickListener {
+            replaceFragment(RoomFragment())
+        }
     }
 
     private fun replaceFragment(fragment: Fragment){

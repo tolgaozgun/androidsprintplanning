@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.tolgaozgun.sprintplanning.R
@@ -31,7 +30,6 @@ class JoinRoomFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.imgBackJoinRoom.setOnClickListener{
-            Toast.makeText(context, "Go back clicked", Toast.LENGTH_LONG).show()
             goBackFragment()
         }
     }
@@ -47,6 +45,5 @@ class JoinRoomFragment : Fragment() {
     private fun goBackFragment(){
         val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
         val result: Boolean = fragmentManager.popBackStackImmediate()
-        Log.d("SPRINT_PLANNING", result.toString())
     }
 }

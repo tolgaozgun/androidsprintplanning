@@ -9,9 +9,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.tolgaozgun.sprintplanning.HomeFragment
 import com.tolgaozgun.sprintplanning.R
+import com.tolgaozgun.sprintplanning.TransactionFragment
 import com.tolgaozgun.sprintplanning.databinding.FragmentRoomBinding
-    
-class RoomFragment : Fragment() {
+
+class RoomFragment : TransactionFragment() {
 
     private lateinit var binding: FragmentRoomBinding
 
@@ -30,30 +31,26 @@ class RoomFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
+
         // TODO: Add a menu to confirm leave
         binding.imgRoomLeave.setOnClickListener{
-            replaceFragment(HomeFragment(), shouldAddToBackStack = false)
+            replaceFragment(fragmentManager = fragmentManager, fragment = HomeFragment(),
+                shouldAddToBackStack = false)
         }
 
         // TODO: Check user permissions to display room settings
         // Only admins should be able to change room settings
         // (Should users be able to display them?)
         binding.linearLayoutRoomHeader.setOnClickListener {
-            replaceFragment(RoomSettingsFragment(), shouldAddToBackStack = true)
+            replaceFragment(fragmentManager = fragmentManager, fragment = RoomSettingsFragment(),
+                shouldAddToBackStack = true)
         }
 
         // TODO: Add the room ID and QR code to the share screen
         binding.imgRoomShare.setOnClickListener{
-            replaceFragment(ShareRoomFragment(), shouldAddToBackStack = true)
+            replaceFragment(fragmentManager = fragmentManager, fragment = ShareRoomFragment(),
+                shouldAddToBackStack = true)
         }
-    }
-
-    private fun replaceFragment(fragment: Fragment, shouldAddToBackStack: Boolean = true){
-        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, fragment)
-        if (shouldAddToBackStack)
-            fragmentTransaction.addToBackStack("")
-        fragmentTransaction.commit()
     }
 }

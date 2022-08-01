@@ -14,7 +14,7 @@ import com.tolgaozgun.sprintplanning.room.CreateRoomFragment
 import com.tolgaozgun.sprintplanning.room.JoinRoomFragment
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : TransactionFragment() {
 
     private lateinit var binding : FragmentHomeBinding
 
@@ -32,20 +32,17 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
+
         binding.btnCreateRoom.setOnClickListener {
-            replaceFragment(CreateRoomFragment())
+            replaceFragment(fragmentManager = fragmentManager, fragment = CreateRoomFragment(),
+                shouldAddToBackStack = true)
         }
         binding.btnJoinRoom.setOnClickListener{
-            replaceFragment(JoinRoomFragment())
+            replaceFragment(fragmentManager = fragmentManager, fragment = JoinRoomFragment(),
+            shouldAddToBackStack = true)
         }
-    }
-
-    private fun replaceFragment(fragment: Fragment){
-        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, fragment)
-        fragmentTransaction.addToBackStack("")
-        fragmentTransaction.commit()
     }
 
 }

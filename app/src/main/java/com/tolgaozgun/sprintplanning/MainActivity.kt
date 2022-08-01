@@ -15,6 +15,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         replaceFragment(HomeFragment())
 
+
+        // TODO: If the user is currently in a room, do not load Home Fragment, but load
+        // the Room Fragment with room information instead.
         binding.navigationBar.setOnItemSelectedListener {
             when(it.itemId){
                 R.id.home -> replaceFragment(HomeFragment())

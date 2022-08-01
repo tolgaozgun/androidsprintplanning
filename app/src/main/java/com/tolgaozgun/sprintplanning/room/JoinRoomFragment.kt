@@ -9,9 +9,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.tolgaozgun.sprintplanning.R
+import com.tolgaozgun.sprintplanning.TransactionFragment
 import com.tolgaozgun.sprintplanning.databinding.FragmentJoinRoomBinding
 
-class JoinRoomFragment : Fragment() {
+class JoinRoomFragment : TransactionFragment() {
 
     private lateinit var binding: FragmentJoinRoomBinding
 
@@ -29,25 +30,16 @@ class JoinRoomFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
         binding.imgBackJoinRoom.setOnClickListener{
-            goBackFragment()
+            goBackFragment(fragmentManager = fragmentManager)
         }
         // TODO: Add logic for connecting to a room
         binding.btnJoinRoomFinal.setOnClickListener {
-            replaceFragment(RoomFragment())
+            replaceFragment(fragmentManager = fragmentManager, fragment = RoomFragment(),
+                shouldAddToBackStack = true)
         }
     }
 
-    private fun replaceFragment(fragment: Fragment){
-        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, fragment)
-        fragmentTransaction.addToBackStack("")
-        fragmentTransaction.commit()
-    }
-
-    private fun goBackFragment(){
-        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
-        val result: Boolean = fragmentManager.popBackStackImmediate()
-    }
 }

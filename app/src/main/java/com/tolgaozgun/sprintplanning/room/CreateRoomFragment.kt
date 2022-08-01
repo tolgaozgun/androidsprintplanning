@@ -5,12 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.tolgaozgun.sprintplanning.R
+import com.tolgaozgun.sprintplanning.TransactionFragment
 import com.tolgaozgun.sprintplanning.databinding.FragmentCreateRoomBinding
 
-class CreateRoomFragment : Fragment() {
+class CreateRoomFragment : TransactionFragment() {
 
     private lateinit var binding: FragmentCreateRoomBinding
 
@@ -28,27 +30,17 @@ class CreateRoomFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
         binding.imgBackCreateRoom.setOnClickListener{
-            goBackFragment()
+            goBackFragment(fragmentManager)
         }
 
         // TODO: Add logic for retrieving the settings and creating a room in the network
         binding.btnCreateRoomFinal.setOnClickListener{
-            replaceFragment(RoomFragment())
+            replaceFragment(fragmentManager = fragmentManager, fragment = RoomFragment(),
+                shouldAddToBackStack = true)
         }
-    }
-
-    private fun replaceFragment(fragment: Fragment){
-        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, fragment)
-        fragmentTransaction.addToBackStack("")
-        fragmentTransaction.commit()
-    }
-
-    private fun goBackFragment(){
-        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
-        val result: Boolean = fragmentManager.popBackStackImmediate()
     }
 
 }

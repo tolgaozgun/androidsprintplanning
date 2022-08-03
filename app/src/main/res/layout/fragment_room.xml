@@ -7,17 +7,17 @@
     tools:context=".room.RoomFragment">
 
     <ImageView
-        android:id="@+id/img_room_chat"
+        android:id="@+id/img_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/img_room_leave"
+        app:layout_constraintEnd_toStartOf="@+id/img_leave"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/message_icon" />
 
     <ImageView
-        android:id="@+id/img_room_leave"
+        android:id="@+id/img_leave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -27,7 +27,7 @@
         app:srcCompat="@drawable/leave_icon" />
 
     <TextView
-        android:id="@+id/textView23"
+        android:id="@+id/txt_vote_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -40,7 +40,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linear_layout_room_header" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recycler_view_users"
         android:layout_width="299dp"
         android:layout_height="271dp"
         android:layout_marginStart="30dp"
@@ -53,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linear_layout_room_header" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/btn_show_results"
         android:layout_width="wrap_content"
         android:layout_height="44dp"
         android:layout_marginTop="20dp"
@@ -64,10 +64,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.53"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/linear_layout_vote" />
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/linear_layout_vote"
         android:layout_width="300dp"
         android:layout_height="124dp"
         android:layout_marginStart="30dp"
@@ -76,7 +76,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView"/>
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_users"/>
 
     <LinearLayout
         android:id="@+id/linear_layout_room_header"
@@ -84,13 +84,13 @@
         android:layout_height="39dp"
         android:layout_marginTop="4dp"
         android:orientation="vertical"
-        app:layout_constraintEnd_toStartOf="@+id/img_room_chat"
+        app:layout_constraintEnd_toStartOf="@+id/img_chat"
         app:layout_constraintHorizontal_bias="0.224"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView19"
+            android:id="@+id/txt_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_medium"
@@ -99,7 +99,7 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/textView22"
+            android:id="@+id/txt_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_light"
@@ -115,7 +115,7 @@
         android:layout_marginTop="17dp"
         android:layout_marginEnd="20dp"
         android:src="@drawable/share_from_square_solid"
-        app:layout_constraintEnd_toStartOf="@+id/img_room_chat"
+        app:layout_constraintEnd_toStartOf="@+id/img_chat"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -32,7 +32,7 @@ class RoomSettingsFragment : TransactionFragment() {
 
         val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
 
-        binding.imgBackRoomSettings.setOnClickListener{
+        binding.imgBack.setOnClickListener{
             goBackFragment(fragmentManager = fragmentManager)
         }
     }

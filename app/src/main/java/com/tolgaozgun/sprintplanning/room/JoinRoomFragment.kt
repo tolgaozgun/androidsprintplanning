@@ -32,13 +32,14 @@ class JoinRoomFragment : TransactionFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
-        binding.imgBackJoinRoom.setOnClickListener{
+        binding.imgBack.setOnClickListener{
             goBackFragment(fragmentManager = fragmentManager)
         }
+
         // TODO: Add logic for connecting to a room
-        binding.btnJoinRoomFinal.setOnClickListener {
+        binding.btnJoinRoom.setOnClickListener {
             replaceFragment(fragmentManager = fragmentManager, fragment = RoomFragment(),
-                shouldAddToBackStack = true)
+                 shouldAddToBackStack = true)
         }
     }
 

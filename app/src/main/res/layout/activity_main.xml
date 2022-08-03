@@ -11,7 +11,7 @@
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navigationBar"
+        android:id="@+id/navigation_bar"
         android:layout_width="match_parent"
         android:layout_height="66dp"
         android:background="@drawable/round_rectangle_shape"
@@ -21,7 +21,7 @@
         app:menu="@menu/bottom_navigation" />
 
     <FrameLayout
-        android:id="@+id/frameLayout"
+        android:id="@+id/frame_layout"
         android:layout_width="358dp"
         android:layout_height="572dp"
         app:layout_constraintEnd_toEndOf="parent"

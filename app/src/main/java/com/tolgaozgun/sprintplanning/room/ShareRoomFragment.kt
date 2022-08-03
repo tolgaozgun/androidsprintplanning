@@ -32,7 +32,7 @@ class ShareRoomFragment : TransactionFragment() {
 
         val fragmentManager : FragmentManager = requireActivity().supportFragmentManager
 
-        binding.btnBackShareRoom.setOnClickListener {
+        binding.imgBack.setOnClickListener {
             goBackFragment(fragmentManager = fragmentManager)
         }
     }

@@ -6,17 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".room.RoomSettingsFragment">
 
-    <Switch
-        android:id="@+id/switch2"
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/sw_ask_to_join"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="192dp"
         android:layout_marginTop="28dp"
-        app:layout_constraintStart_toEndOf="@+id/textView32"
-        app:layout_constraintTop_toBottomOf="@+id/slider3" />
+        app:layout_constraintStart_toEndOf="@+id/txt_ask_to_join"
+        app:layout_constraintTop_toBottomOf="@+id/sl_user_limit" />
 
     <com.google.android.material.slider.Slider
-        android:id="@+id/slider3"
+        android:id="@+id/sl_user_limit"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="12dp"
@@ -28,10 +28,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView31" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_user_limit_desc" />
 
     <TextView
-        android:id="@+id/textView27"
+        android:id="@+id/txt_user_limit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -44,7 +44,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView30"
+        android:id="@+id/txt_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
@@ -57,19 +57,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/img_back_room_settings"
+        android:id="@+id/img_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="50dp"
         android:src="@drawable/chevron_left_solid"
-        app:layout_constraintEnd_toStartOf="@+id/textView30"
+        app:layout_constraintEnd_toStartOf="@+id/txt_title"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView31"
+        android:id="@+id/txt_user_limit_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -78,10 +78,10 @@
         android:text="@string/max_num_users"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView27" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_user_limit" />
 
     <TextView
-        android:id="@+id/textView32"
+        android:id="@+id/txt_ask_to_join"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -91,17 +91,17 @@
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/slider3" />
+        app:layout_constraintTop_toBottomOf="@+id/sl_user_limit" />
 
     <TextView
-        android:id="@+id/textView33"
+        android:id="@+id/txt_ask_to_join_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="8dp"
         android:text="@string/should_ask_to_join"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView32" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_ask_to_join" />
 
     Switch
         android:id="@+id/switch1"
@@ -111,7 +111,7 @@
         tools:layout_editor_absoluteY="279dp" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/btn_export_results"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
@@ -119,10 +119,10 @@
         android:text="@string/export_results"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView33" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_ask_to_join_desc" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/btn_disband_room"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -130,6 +130,6 @@
         android:text="@string/disband_room"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button4" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_export_results" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

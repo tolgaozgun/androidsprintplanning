@@ -34,7 +34,7 @@ class RoomFragment : TransactionFragment() {
         val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
 
         // TODO: Add a menu to confirm leave
-        binding.imgRoomLeave.setOnClickListener{
+        binding.imgLeave.setOnClickListener{
             replaceFragment(fragmentManager = fragmentManager, fragment = HomeFragment(),
                 shouldAddToBackStack = false)
         }

@@ -32,12 +32,12 @@ class CreateRoomFragment : TransactionFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
-        binding.imgBackCreateRoom.setOnClickListener{
+        binding.imgBack.setOnClickListener{
             goBackFragment(fragmentManager)
         }
 
         // TODO: Add logic for retrieving the settings and creating a room in the network
-        binding.btnCreateRoomFinal.setOnClickListener{
+        binding.btnCreateRoom.setOnClickListener{
             replaceFragment(fragmentManager = fragmentManager, fragment = RoomFragment(),
                 shouldAddToBackStack = true)
         }

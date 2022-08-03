@@ -7,7 +7,7 @@
     tools:context=".room.JoinRoomFragment">
 
     <TextView
-        android:id="@+id/textView24"
+        android:id="@+id/txt_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
@@ -20,19 +20,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView14"
+        android:id="@+id/img_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="29dp"
         android:layout_marginTop="49dp"
-        app:layout_constraintEnd_toStartOf="@+id/textView24"
+        app:layout_constraintEnd_toStartOf="@+id/txt_title"
         app:layout_constraintHorizontal_bias="0.013"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/chevron_left_solid" />
 
     <TextView
-        android:id="@+id/textView25"
+        android:id="@+id/txt_room_id_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -42,10 +42,10 @@
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView24" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_title" />
 
     <TextView
-        android:id="@+id/textView28"
+        android:id="@+id/txt_qr_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -55,43 +55,44 @@
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView15" />
+        app:layout_constraintTop_toBottomOf="@+id/img_seperator" />
 
     <TextView
-        android:id="@+id/textView26"
+        android:id="@+id/txt_room_id_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="78dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="45dp"
         android:text="7AX235E"
         android:textColor="@color/black"
         android:textSize="32sp"
-        app:layout_constraintStart_toEndOf="@+id/textView25"
-        tools:layout_editor_absoluteY="122dp" />
+        app:layout_constraintStart_toEndOf="@+id/txt_room_id_title"
+        app:layout_constraintTop_toBottomOf="@+id/txt_title" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btn_join_room"
+        android:layout_marginTop="46dp"
         android:layout_width="200dp"
         android:layout_height="40dp"
-        android:layout_marginTop="46dp"
         android:background="@drawable/round_rectangle_shape"
         android:text="@string/join_room"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView26" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_room_id_input" />
 
     <ImageView
-        android:id="@+id/imageView15"
+        android:id="@+id/img_seperator"
         android:layout_width="301dp"
         android:layout_height="4dp"
         android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
+        app:layout_constraintTop_toBottomOf="@+id/btn_join_room"
         app:srcCompat="@drawable/line_2" />
 
     <TextView
-        android:id="@+id/textView29"
+        android:id="@+id/txt_qr_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -100,16 +101,16 @@
         android:text="@string/qr_code_requires_camera"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView28" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_qr_title" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/img_camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:src="@drawable/camera_circle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView29" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_qr_desc" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

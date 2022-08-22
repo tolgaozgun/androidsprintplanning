@@ -1,19 +1,30 @@
-package com.tolgaozgun.sprintplanning
+package com.tolgaozgun.sprintplanning.views.mainmenu
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tolgaozgun.sprintplanning.databinding.FragmentHomeBinding
+import androidx.fragment.app.FragmentManager
 import com.tolgaozgun.sprintplanning.databinding.FragmentProfileBinding
+import com.tolgaozgun.sprintplanning.viewmodels.mainmenu.ProfileViewModel
+import com.tolgaozgun.sprintplanning.viewmodels.mainmenu.ProfileViewModelFactory
 
 class ProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
+    private lateinit var viewModel: ProfileViewModel
+    private lateinit var viewModelFactory: ProfileViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
+        viewModelFactory = ProfileViewModelFactory(fragmentManager = fragmentManager)
+        viewModel = viewModelFactory.create(ProfileViewModel::class.java)
     }
 
     override fun onCreateView(

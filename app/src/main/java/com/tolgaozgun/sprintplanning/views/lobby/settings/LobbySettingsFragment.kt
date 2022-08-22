@@ -1,22 +1,31 @@
-package com.tolgaozgun.sprintplanning.room
+package com.tolgaozgun.sprintplanning.views.lobby.settings
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import com.tolgaozgun.sprintplanning.R
-import com.tolgaozgun.sprintplanning.TransactionFragment
 import com.tolgaozgun.sprintplanning.databinding.FragmentRoomSettingsBinding
+import com.tolgaozgun.sprintplanning.viewmodels.lobby.settings.LobbySettingsViewModel
+import com.tolgaozgun.sprintplanning.viewmodels.lobby.settings.LobbySettingsViewModelFactory
 
-class RoomSettingsFragment : TransactionFragment() {
+class LobbySettingsFragment : Fragment() {
 
     private lateinit var binding: FragmentRoomSettingsBinding
+    private lateinit var viewModel: LobbySettingsViewModel
+    private lateinit var viewModelFactory: LobbySettingsViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
+        viewModelFactory = LobbySettingsViewModelFactory(context = requireContext(),
+            fragmentManager = fragmentManager)
+        viewModel = viewModelFactory.create(LobbySettingsViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -30,10 +39,8 @@ class RoomSettingsFragment : TransactionFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
-
         binding.imgBack.setOnClickListener{
-            goBackFragment(fragmentManager = fragmentManager)
+            viewModel.goBackFragment()
         }
     }
 

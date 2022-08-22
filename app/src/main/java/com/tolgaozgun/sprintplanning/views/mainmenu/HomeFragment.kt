@@ -1,22 +1,23 @@
-package com.tolgaozgun.sprintplanning
+package com.tolgaozgun.sprintplanning.views.mainmenu
 
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import com.tolgaozgun.sprintplanning.databinding.FragmentHomeBinding
-import com.tolgaozgun.sprintplanning.room.CreateRoomFragment
-import com.tolgaozgun.sprintplanning.room.JoinRoomFragment
+import com.tolgaozgun.sprintplanning.viewmodels.mainmenu.HomeViewModel
+import com.tolgaozgun.sprintplanning.viewmodels.mainmenu.HomeViewModelFactory
+import com.tolgaozgun.sprintplanning.views.lobby.create.CreateLobbyFragment
+import com.tolgaozgun.sprintplanning.views.lobby.join.JoinLobbyFragment
 
 
-class HomeFragment : TransactionFragment() {
+class HomeFragment : Fragment() {
 
     private lateinit var binding : FragmentHomeBinding
+    private lateinit var viewModel: HomeViewModel
+    private lateinit var viewModelFactory: HomeViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,17 +31,22 @@ class HomeFragment : TransactionFragment() {
         return binding.root
     }
 
+    override fun onStart() {
+        super.onStart()
+        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
+        viewModelFactory = HomeViewModelFactory(fragmentManager = fragmentManager)
+        viewModel = viewModelFactory.create(HomeViewModel::class.java)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
-
         binding.btnCreateRoom.setOnClickListener {
-            replaceFragment(fragmentManager = fragmentManager, fragment = CreateRoomFragment(),
+            viewModel.replaceFragment(fragment = CreateLobbyFragment(),
                 shouldAddToBackStack = true)
         }
         binding.btnJoinRoom.setOnClickListener{
-            replaceFragment(fragmentManager = fragmentManager, fragment = JoinRoomFragment(),
+            viewModel.replaceFragment(fragment = JoinLobbyFragment(),
             shouldAddToBackStack = true)
         }
     }

@@ -1,8 +1,9 @@
-package com.tolgaozgun.sprintplanning
+package com.tolgaozgun.sprintplanning.views.mainmenu
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tolgaozgun.sprintplanning.R
 import com.tolgaozgun.sprintplanning.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".room.RoomFragment">
+    tools:context=".views.lobby.LobbyFragment">
 
     <ImageView
         android:id="@+id/img_chat"
@@ -116,6 +116,18 @@
         android:layout_marginEnd="20dp"
         android:src="@drawable/share_from_square_solid"
         app:layout_constraintEnd_toStartOf="@+id/img_chat"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/img_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/_02_settings"
+        app:layout_constraintEnd_toStartOf="@+id/img_room_share"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/linear_layout_room_header"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

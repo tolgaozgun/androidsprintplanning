@@ -1,20 +1,20 @@
-package com.tolgaozgun.sprintplanning.room
+package com.tolgaozgun.sprintplanning.views.lobby.create
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import com.tolgaozgun.sprintplanning.R
-import com.tolgaozgun.sprintplanning.TransactionFragment
 import com.tolgaozgun.sprintplanning.databinding.FragmentCreateRoomBinding
+import com.tolgaozgun.sprintplanning.viewmodels.lobby.create.CreateLobbyViewModel
+import com.tolgaozgun.sprintplanning.viewmodels.lobby.create.CreateLobbyViewModelFactory
 
-class CreateRoomFragment : TransactionFragment() {
+class CreateLobbyFragment : Fragment() {
 
     private lateinit var binding: FragmentCreateRoomBinding
+    private lateinit var viewModel: CreateLobbyViewModel
+    private lateinit var viewModelFactory: CreateLobbyViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,18 +28,24 @@ class CreateRoomFragment : TransactionFragment() {
         return binding.root
     }
 
+    override fun onStart() {
+        super.onStart()
+        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
+        viewModelFactory = CreateLobbyViewModelFactory(context = requireContext(),
+            fragmentManager = fragmentManager)
+        viewModel = viewModelFactory.create(CreateLobbyViewModel::class.java)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
         binding.imgBack.setOnClickListener{
-            goBackFragment(fragmentManager)
+            viewModel.goBackFragment()
         }
 
-        // TODO: Add logic for retrieving the settings and creating a room in the network
         binding.btnCreateRoom.setOnClickListener{
-            replaceFragment(fragmentManager = fragmentManager, fragment = RoomFragment(),
-                shouldAddToBackStack = true)
+            viewModel.createLobby()
+
         }
     }
 

@@ -1,14 +1,26 @@
-package com.tolgaozgun.sprintplanning
+package com.tolgaozgun.sprintplanning.viewmodels
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModel
+import com.tolgaozgun.sprintplanning.R
 
-abstract class TransactionFragment : Fragment() {
+abstract class TransactionViewModel(
+    protected var fragmentManager: FragmentManager,
+) : ViewModel() {
 
-    protected fun replaceFragment(fragmentManager: FragmentManager, fragment: Fragment,
-                                  shouldAddToBackStack: Boolean = true){
+    fun replaceFragment(fragment: Fragment,
+                                  shouldAddToBackStack: Boolean = true,
+                                  arguments: Bundle? = null
+    ){
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+
+        arguments?.let{ args ->
+            fragment.arguments = args
+        }
+
         fragmentTransaction.replace(R.id.frame_layout, fragment)
         if (shouldAddToBackStack)
             fragmentTransaction.addToBackStack(null)
@@ -18,7 +30,7 @@ abstract class TransactionFragment : Fragment() {
         fragmentTransaction.commit()
     }
 
-    protected fun goBackFragment(fragmentManager: FragmentManager) : Boolean{
+    open fun goBackFragment() : Boolean{
         return fragmentManager.popBackStackImmediate()
     }
 }

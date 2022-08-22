@@ -1,23 +1,33 @@
-package com.tolgaozgun.sprintplanning.room
+package com.tolgaozgun.sprintplanning.views.lobby.join
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import com.tolgaozgun.sprintplanning.R
-import com.tolgaozgun.sprintplanning.TransactionFragment
 import com.tolgaozgun.sprintplanning.databinding.FragmentJoinRoomBinding
+import com.tolgaozgun.sprintplanning.viewmodels.lobby.join.JoinLobbyViewModel
+import com.tolgaozgun.sprintplanning.viewmodels.lobby.join.JoinLobbyViewModelFactory
 
-class JoinRoomFragment : TransactionFragment() {
+class JoinLobbyFragment : Fragment() {
 
     private lateinit var binding: FragmentJoinRoomBinding
+    private lateinit var viewModel: JoinLobbyViewModel
+    private lateinit var viewModelFactory: JoinLobbyViewModelFactory
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
+        viewModelFactory = JoinLobbyViewModelFactory(context = requireContext(),
+            fragmentManager = fragmentManager)
+        viewModel = viewModelFactory.create(JoinLobbyViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -31,15 +41,12 @@ class JoinRoomFragment : TransactionFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
         binding.imgBack.setOnClickListener{
-            goBackFragment(fragmentManager = fragmentManager)
+            viewModel.goBackFragment()
         }
 
-        // TODO: Add logic for connecting to a room
         binding.btnJoinRoom.setOnClickListener {
-            replaceFragment(fragmentManager = fragmentManager, fragment = RoomFragment(),
-                 shouldAddToBackStack = true)
+            viewModel.joinRoom()
         }
     }
 

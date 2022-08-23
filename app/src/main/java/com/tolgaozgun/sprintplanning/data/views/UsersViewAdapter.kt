@@ -1,45 +1,44 @@
 package com.tolgaozgun.sprintplanning.data.views
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tolgaozgun.sprintplanning.databinding.VoteCardBinding
-import com.tolgaozgun.sprintplanning.util.Constants
+import com.tolgaozgun.sprintplanning.data.model.User
+import com.tolgaozgun.sprintplanning.databinding.PlayerCardBinding
 
 class UsersViewAdapter(private var context: Context,
-                      private val listener: UsersViewClickListener) : RecyclerView.Adapter<UsersViewAdapter.UsersViewHolder>() {
+                       private var users: List<User>,
+                       private val listener: UsersViewClickListener) : RecyclerView.Adapter<UsersViewAdapter.UsersViewHolder>() {
 
     fun interface UsersViewClickListener {
-        fun onItemClick(item: Int)
+        fun onItemClick(user: User)
     }
 
-    private var values: IntArray = Constants.VOTE_VALUES
+    class UsersViewHolder(private var binding: PlayerCardBinding): RecyclerView.ViewHolder(binding.root){
 
-    class UsersViewHolder(private var binding: VoteCardBinding): RecyclerView.ViewHolder(binding.root){
-
-        fun bind(value: Int, position: Int, listener: UsersViewClickListener){
+        fun bind(user: User, position: Int, listener: UsersViewClickListener){
             with(binding){
-                tvValue.text = value.toString()
-                myRectangleView.setOnClickListener {
-                    listener.onItemClick(value)
+                txtName.text = user.name
+                txtVoteValue.text = ""
+                constraintLayoutPlayerCard.setOnClickListener {
+                    listener.onItemClick(user)
                 }
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsersViewHolder {
-        val itemBinding = VoteCardBinding.inflate(LayoutInflater.from(context), parent, false)
+        val itemBinding = PlayerCardBinding.inflate(LayoutInflater.from(context), parent, false)
         return UsersViewHolder(itemBinding)
     }
 
     override fun onBindViewHolder(holder: UsersViewHolder, position: Int) {
-        holder.bind(values[position], position, listener)
+        holder.bind(users[position], position, listener)
     }
 
     override fun getItemCount(): Int {
-        return values.count()
+        return users.count()
     }
 
 

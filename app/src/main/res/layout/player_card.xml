@@ -2,8 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/constraint_layout_player_card"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/img_avatar"
@@ -13,12 +14,35 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/roundedImageViewRounded" />
+        app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+        app:srcCompat="@drawable/qrcode" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/txt_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="93dp" />
+        android:text="@string/default_username"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_avatar" />
+
+    <ImageView
+        android:id="@+id/img_vote_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="-22dp"
+        app:layout_constraintStart_toEndOf="@+id/txt_name"
+        app:layout_constraintTop_toBottomOf="@+id/img_avatar"
+        app:srcCompat="@drawable/users_view_vote_card" />
+
+    <TextView
+        android:id="@+id/txt_vote_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="89"
+        app:layout_constraintBottom_toBottomOf="@+id/img_vote_card"
+        app:layout_constraintEnd_toEndOf="@+id/img_vote_card"
+        app:layout_constraintStart_toStartOf="@+id/img_vote_card"
+        app:layout_constraintTop_toTopOf="@+id/img_vote_card" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

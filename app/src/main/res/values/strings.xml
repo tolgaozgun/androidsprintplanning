@@ -3,7 +3,7 @@
     <string name="join_room">Join Room</string>
     <string name="create_room">Create Room</string>
     <string name="welcome_back">Welcome back!</string>
-    <string name="hello_name">Hello, $1%!</string>
+    <string name="hello_name">Hello, %1$s!</string>
     <string name="room_id">Room ID</string>
     <string name="qr_code">QR Code</string>
     <string name="qr_code_requires_camera">QR Code requires access to your device camera</string>
@@ -45,6 +45,5 @@
 
     <string name="vote">Vote</string>
     <string name="default_username">Name</string>
-
 
 </resources>

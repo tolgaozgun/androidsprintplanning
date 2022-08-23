@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.tolgaozgun.sprintplanning.R
 import com.tolgaozgun.sprintplanning.databinding.FragmentHomeBinding
 import com.tolgaozgun.sprintplanning.viewmodels.mainmenu.HomeViewModel
 import com.tolgaozgun.sprintplanning.viewmodels.mainmenu.HomeViewModelFactory
@@ -34,8 +35,16 @@ class HomeFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
-        viewModelFactory = HomeViewModelFactory(fragmentManager = fragmentManager)
+        viewModelFactory = HomeViewModelFactory(fragmentManager = fragmentManager,
+            context = requireContext())
         viewModel = viewModelFactory.create(HomeViewModel::class.java)
+
+        val userName: String? = viewModel.getUsername()
+
+        val text: String = getString(R.string.hello_name, userName)
+
+        binding.txtTitle.text = text
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

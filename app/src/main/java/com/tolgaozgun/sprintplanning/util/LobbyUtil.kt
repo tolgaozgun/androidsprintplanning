@@ -8,6 +8,7 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import com.tolgaozgun.sprintplanning.data.model.Lobby
 import com.tolgaozgun.sprintplanning.data.model.LobbyState
+import com.tolgaozgun.sprintplanning.data.model.User
 import java.util.*
 
 class LobbyUtil {
@@ -76,7 +77,7 @@ class LobbyUtil {
                 bundle.putLong("time_created", timeCreated)
                 bundle.putLong("time_updated", timeUpdated)
                 bundle.putString("status", status.toString())
-                bundle.putString("users", Converters.uuidListToString(users))
+                bundle.putString("users", Converters.userListToString(users))
                 bundle.putBoolean("ask_to_join", askToJoin)
             }
             return bundle
@@ -91,7 +92,7 @@ class LobbyUtil {
             val timeUpdated: Long = bundle.getLong("time_updated")
             val status: LobbyState = LobbyState.valueOf(bundle.getString("status")!!)
             val askToJoin: Boolean = bundle.getBoolean("ask_to_join")
-            val users: List<UUID> = Converters.stringToUuidList(bundle.getString("users")!!)
+            val users: List<User> = Converters.stringToUserList(bundle.getString("users")!!)
 
             return Lobby(id, name, code, userLimit, timeCreated, timeUpdated, users, status, askToJoin)
         }

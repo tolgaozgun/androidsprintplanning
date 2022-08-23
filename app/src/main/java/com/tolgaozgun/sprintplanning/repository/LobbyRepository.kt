@@ -3,6 +3,7 @@ package com.tolgaozgun.sprintplanning.repository
 import android.content.Context
 import com.tolgaozgun.sprintplanning.data.local.LobbyDatabase
 import com.tolgaozgun.sprintplanning.data.model.Lobby
+import com.tolgaozgun.sprintplanning.data.model.User
 import com.tolgaozgun.sprintplanning.data.remote.LobbyRemoteDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -44,6 +45,23 @@ class LobbyRepository(
 
     suspend fun voteLobby(vote: Int, userIdString: String): Boolean {
         return remoteDataSource.vote(vote, userIdString)
+    }
+
+    suspend fun loadUsersWithString(stringList: List<String>): List<User>{
+        val uuidList: MutableList<UUID> = mutableListOf()
+
+        for(string in stringList){
+            uuidList.add(UUID.fromString(string))
+        }
+        return loadUsersWithUuid(uuidList.toList())
+    }
+
+    suspend fun loadUsersWithUuid(uuidList: List<UUID>): List<User>{
+        return remoteDataSource.loadUsers(uuidList)
+    }
+
+    suspend fun updateUser(context: Context): Boolean{
+        return remoteDataSource.updateUser(context)
     }
 
 }

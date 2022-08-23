@@ -3,6 +3,8 @@ package com.tolgaozgun.sprintplanning.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.common.reflect.TypeToken
+import com.google.gson.Gson
 import java.util.*
 
 @Entity
@@ -12,7 +14,10 @@ data class User(
     @ColumnInfo(name="avatar_url")      var avatarUrl: String?,
     @ColumnInfo(name="vote")            var vote: Int?,
     @ColumnInfo(name="has_voted")       var hasVoted: Boolean,
-)
+){
+
+}
+
 
 
 

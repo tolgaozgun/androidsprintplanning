@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tolgaozgun.sprintplanning.data.model.Lobby
+import com.tolgaozgun.sprintplanning.data.views.UsersViewAdapter
 import com.tolgaozgun.sprintplanning.data.views.VoteCardAdapter
 import com.tolgaozgun.sprintplanning.databinding.FragmentRoomBinding
 import com.tolgaozgun.sprintplanning.util.LobbyUtil
@@ -18,6 +20,7 @@ import com.tolgaozgun.sprintplanning.views.mainmenu.HomeFragment
 class LobbyFragment : Fragment() {
 
     private lateinit var voteCardAdapter: VoteCardAdapter
+    private lateinit var usersViewAdapter: UsersViewAdapter
     private lateinit var binding: FragmentRoomBinding
     private lateinit var viewModel: LobbyViewModel
     private lateinit var viewModelFactory: LobbyViewModelFactory
@@ -71,6 +74,14 @@ class LobbyFragment : Fragment() {
     }
 
     private fun setupUsersView(){
+        val listener =
+            UsersViewAdapter.UsersViewClickListener { user ->
+                Toast.makeText(requireContext(), "User Clicked ${user.name}", Toast.LENGTH_SHORT).show()
+            }
+
+        usersViewAdapter = UsersViewAdapter(requireContext(), lobby.users, listener)
+        binding.recyclerViewUsers.adapter = usersViewAdapter
+        binding.recyclerViewUsers.layoutManager = GridLayoutManager(requireContext(), 3)
 
     }
 

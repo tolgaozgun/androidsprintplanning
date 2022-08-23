@@ -12,11 +12,16 @@ import com.google.firebase.ktx.Firebase
 import com.tolgaozgun.sprintplanning.data.local.LobbyDatabase
 import com.tolgaozgun.sprintplanning.data.model.Lobby
 import com.tolgaozgun.sprintplanning.data.model.SerializedLobby
+import com.tolgaozgun.sprintplanning.data.model.User
 import com.tolgaozgun.sprintplanning.repository.LobbyRepository
+import com.tolgaozgun.sprintplanning.util.Converters
 import com.tolgaozgun.sprintplanning.util.FirebaseUtil
 import com.tolgaozgun.sprintplanning.util.LobbyUtil
+import com.tolgaozgun.sprintplanning.util.LocalUtil
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import java.util.*
 
@@ -41,56 +46,102 @@ class LobbyRemoteDataSource(
         }
     }
 
+    suspend fun leaveLobby(context: Context, lobby: Lobby): Boolean{
+        val lobbies: CollectionReference = firestore.collection("lobbies")
+
+        clearLocalUserVote(context)
+        return true
+    }
+
+    suspend fun clearLocalUserVote(context: Context): Boolean{
+        val user: User = LocalUtil.loadLocalUser(context)
+        val users: CollectionReference = firestore.collection("users")
+        val userRef = users.document(user.id.toString())
+        firestore.runBatch {
+            userRef.update("vote", -1)
+            userRef.update("has_voted", false)
+        }.await()
+        return true
+    }
+
     suspend fun joinLobby(code: String, context: Context) : Lobby?{
         val lobbies: CollectionReference = firestore.collection("lobbies")
         var lobby: Lobby? = null
 
-        lobbies.get().addOnCompleteListener { task ->
-            if(task.isSuccessful){
-                val existingLobbies = task.result
-                if(existingLobbies != null){
-                    for(existingLobby in existingLobbies){
-                        if(existingLobby.contains("code")){
-                            val currentCode: String = existingLobby.getString("code")!!
-                            if(currentCode == code){
-                                lobby = Lobby.loadSnapshot(existingLobby)
-                                break
-                            }
-                        }
+        var result = lobbies.get().await()
+
+        if(result != null){
+            for(existingLobby in result){
+                if(existingLobby.contains("code")){
+                    val currentCode: String = existingLobby.getString("code")!!
+                    Log.d("JOIN_OBBY", "Checking $currentCode against our $code")
+
+                    if(currentCode == code){
+                        lobby = Lobby.loadSnapshot(existingLobby)
+                        break
                     }
                 }
             }
-        }.await()
+        }
+
 
         if(lobby != null){
-            // TODO: Join Success
-            val userList: MutableList<UUID> = lobby!!.users.toMutableList()
-            val sharedPreferences: SharedPreferences =
-                context.getSharedPreferences("local_user", Context.MODE_PRIVATE)
+            val userList: MutableList<User> = lobby.users.toMutableList()
+            val localUser: User = LocalUtil.loadLocalUser(context)
 
+            userList.add(localUser)
+            lobby.users = userList.toList()
 
-            val idString: String = sharedPreferences.getString("id", null)!!
-
-            userList.add(UUID.fromString(idString))
-            lobby!!.users = userList.toList()
-
-            val serializedLobby: SerializedLobby = Lobby.serialize(lobby!!)
-            lobbies.document(lobby!!.code).update("users", serializedLobby.users).await()
+            val serializedLobby: SerializedLobby = Lobby.serialize(lobby)
+            lobbies.document(lobby.code).update("users", serializedLobby.users).await()
+            var addedLobby = lobbies.document(lobby.code).get().await()
+            if(addedLobby != null){
+                return Lobby.loadSnapshot(addedLobby)
+            }
         }else{
+            Log.d("JOIN_LOBBY", "Lobby not found")
             // TODO: Join failed
+            return null
         }
-        return lobby
+        return null
+    }
+
+    suspend fun updateUser(context: Context): Boolean{
+        val user: User = LocalUtil.loadLocalUser(context)
+        val users: CollectionReference = firestore.collection("users")
+        val userRef = users.document(user.id.toString())
+        firestore.runBatch{ batch ->
+            userRef.update("avatar", user.avatarUrl)
+            userRef.update("name", user.name)
+        }.await()
+        return true
     }
 
     suspend fun vote(value: Int, userId: String): Boolean{
-        var result: Boolean = false
         val users: CollectionReference = firestore.collection("users")
-        users.document(userId).update("vote", value).addOnCompleteListener {
-            result = true
-        }.addOnFailureListener{
-            result = false
+        val user = users.document(userId)
+
+        firestore.runBatch{ batch ->
+            user.update("vote", value)
+            user.update("has_voted", true)
+        }.await()
+
+        return true
+    }
+
+    suspend fun loadUsers(uuidList: List<UUID>): List<User>{
+        var list: MutableList<UUID> = uuidList.toMutableList()
+        var userList: MutableList<User> = mutableListOf()
+        val users = firestore.collection("users").get().await()
+        if(users != null){
+            for(userRef in users){
+                val user: User = Converters.snapshotToUser(userRef)
+                if(list.contains(user.id)){
+                    userList.add(user)
+                }
+            }
         }
-        return result
+        return userList.toList()
     }
 
     suspend fun createLobby(pendingLobby: Lobby) : Lobby{
@@ -99,20 +150,16 @@ class LobbyRemoteDataSource(
 
         val serializedLobby: SerializedLobby = Lobby.serialize(pendingLobby)
 
-        lobbies.get().addOnCompleteListener { task ->
-            if(task.isSuccessful){
-                val existingLobbies = task.result
-                if(existingLobbies != null){
-                    for(existingLobby in existingLobbies){
-                        if(existingLobby.contains("code")){
-                            val code: String = existingLobby.getString("code")!!
-                            codes.add(code)
-                        }
-                    }
+        val lobbiesList = lobbies.get().await()
+
+        if(lobbiesList != null) {
+            for (existingLobby in lobbiesList) {
+                if (existingLobby.contains("code")) {
+                    val code: String = existingLobby.getString("code")!!
+                    codes.add(code)
                 }
             }
-        }.await()
-
+        }
 
         var currentCode: String = serializedLobby.code
         while(codes.contains(currentCode)){
@@ -121,9 +168,9 @@ class LobbyRemoteDataSource(
         serializedLobby.code = currentCode
 
         //TODO: Add success and error returns
-        val documentReference : DocumentReference = lobbies.add(serializedLobby)
+        lobbies.document(serializedLobby.code).set(serializedLobby)
             .addOnSuccessListener { snapshot ->
-                Log.d("CREATELOBBY", "Successfully added lobby with id-> ${snapshot.id}")
+                Log.d("CREATELOBBY", "Successfully added lobby")
             }
             .addOnFailureListener { exception ->
                 Log.d("CREATELOBBY", "Failed to add lobby $exception")

@@ -45,7 +45,7 @@ class JoinLobbyFragment : Fragment() {
         }
 
         binding.btnJoinRoom.setOnClickListener {
-            viewModel.joinRoom()
+            viewModel.joinRoom(binding.txtRoomIdInput.text.toString())
         }
     }
 

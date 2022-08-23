@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import com.tolgaozgun.sprintplanning.data.model.Lobby
 import com.tolgaozgun.sprintplanning.data.model.LobbyState
+import com.tolgaozgun.sprintplanning.data.model.User
 import com.tolgaozgun.sprintplanning.repository.LobbyRepository
 import com.tolgaozgun.sprintplanning.util.LobbyUtil
 import com.tolgaozgun.sprintplanning.viewmodels.TransactionViewModel
@@ -48,7 +49,7 @@ class CreateLobbyViewModel(
         val idString: String = sharedPreferences.getString("id", null)!!
 
         Log.d("UUID", idString)
-        val userList = listOf<UUID>(UUID.fromString(idString))
+        val userList = listOf<User>(User(UUID.fromString(idString), "Name", "avatarUrl", -1, false))
 
         val pendingLobby: Lobby = Lobby(
             userLimit = mUserLimit,

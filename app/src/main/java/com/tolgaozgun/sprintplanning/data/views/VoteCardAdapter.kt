@@ -21,7 +21,7 @@ class VoteCardAdapter(private var context: Context,
 
         fun bind(value: Int, position: Int, listener: VoteCardClickListener){
             with(binding){
-                tvValue.text = value.toString()
+                txtValue.text = value.toString()
                 myRectangleView.setOnClickListener {
                     listener.onItemClick(value)
                 }

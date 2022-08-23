@@ -8,7 +8,7 @@ class SettingsViewModelFactory(private val fragmentManager: FragmentManager,
 ): ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return if (modelClass.isAssignableFrom(ProfileViewModel::class.java)){
+        return if (modelClass.isAssignableFrom(SettingsViewModel::class.java)){
             SettingsViewModel(fragmentManager = fragmentManager) as T
         }else{
             throw IllegalArgumentException("Unknown ViewModel class, not a SettingsViewModel")

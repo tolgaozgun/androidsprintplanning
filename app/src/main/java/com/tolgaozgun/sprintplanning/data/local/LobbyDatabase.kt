@@ -14,7 +14,7 @@ import com.tolgaozgun.sprintplanning.util.Converters
         Lobby::class,
         User::class
     ],
-    version = 1
+    version = 2
 )
 @TypeConverters(Converters::class)
 abstract class LobbyDatabase : RoomDatabase() {

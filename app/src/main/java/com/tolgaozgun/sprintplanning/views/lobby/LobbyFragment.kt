@@ -1,22 +1,23 @@
 package com.tolgaozgun.sprintplanning.views.lobby
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tolgaozgun.sprintplanning.data.model.Lobby
-import com.tolgaozgun.sprintplanning.data.model.LobbyState
+import com.tolgaozgun.sprintplanning.data.views.VoteCardAdapter
 import com.tolgaozgun.sprintplanning.databinding.FragmentRoomBinding
 import com.tolgaozgun.sprintplanning.util.LobbyUtil
-import com.tolgaozgun.sprintplanning.views.lobby.settings.LobbySettingsFragment
-import com.tolgaozgun.sprintplanning.views.lobby.share.ShareLobbyFragment
 import com.tolgaozgun.sprintplanning.views.mainmenu.HomeFragment
-import java.util.*
 
 class LobbyFragment : Fragment() {
 
+    private lateinit var voteCardAdapter: VoteCardAdapter
     private lateinit var binding: FragmentRoomBinding
     private lateinit var viewModel: LobbyViewModel
     private lateinit var viewModelFactory: LobbyViewModelFactory
@@ -24,6 +25,7 @@ class LobbyFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
     override fun onCreateView(
@@ -32,12 +34,9 @@ class LobbyFragment : Fragment() {
     ): View? {
         binding = FragmentRoomBinding.inflate(inflater, container, false)
 
-        val bundle: Bundle? = arguments
-        if(bundle != null){
-            lobby = LobbyUtil.fromBundle(bundle)
-            binding.txtTitle.text = lobby.name
-            binding.txtSubtitle.text = lobby.status.toString()
-        }
+        setupView()
+        setupVoteCard()
+        setupUsersView()
 
         return binding.root
     }
@@ -45,10 +44,36 @@ class LobbyFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
-        viewModelFactory = LobbyViewModelFactory(fragmentManager = fragmentManager)
+        viewModelFactory = LobbyViewModelFactory(fragmentManager = fragmentManager,
+            context = requireContext())
         viewModel = viewModelFactory.create(LobbyViewModel::class.java)
 
     }
+
+    private fun setupView(){
+        val bundle: Bundle? = arguments
+        if(bundle != null){
+            lobby = LobbyUtil.fromBundle(bundle)
+            binding.txtTitle.text = lobby.name
+            binding.txtSubtitle.text = lobby.status.toString()
+        }
+    }
+
+    private fun setupVoteCard(){
+        val listener =
+            VoteCardAdapter.VoteCardClickListener { item ->
+                Toast.makeText(requireContext(), "Item Clicked $item", Toast.LENGTH_LONG).show()
+            }
+
+        voteCardAdapter = VoteCardAdapter(requireContext(), listener)
+        binding.linearLayoutVoteContent.adapter = voteCardAdapter
+        binding.linearLayoutVoteContent.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+    }
+
+    private fun setupUsersView(){
+
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,19 +89,12 @@ class LobbyFragment : Fragment() {
         // TODO: Check user permissions to display room settings
         // Only admins should be able to change room settings
         // (Should users be able to display them?)
-        binding.linearLayoutRoomHeader.setOnClickListener {
-            viewModel.replaceFragment(fragment = LobbySettingsFragment(),
-                shouldAddToBackStack = true)
-        }
-
-        // TODO: Add the room ID and QR code to the share screen
-        binding.imgRoomShare.setOnClickListener{
-            viewModel.replaceFragment(fragment = ShareLobbyFragment(),
-                shouldAddToBackStack = true)
-        }
-
         binding.imgSettings.setOnClickListener{
             viewModel.openSettings(lobby)
+        }
+
+        binding.imgRoomShare.setOnClickListener{
+            viewModel.openShare(lobby)
         }
     }
 }

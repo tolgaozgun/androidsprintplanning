@@ -16,11 +16,9 @@ class JoinLobbyFragment : Fragment() {
     private lateinit var viewModel: JoinLobbyViewModel
     private lateinit var viewModelFactory: JoinLobbyViewModelFactory
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -40,6 +38,7 @@ class JoinLobbyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         binding.imgBack.setOnClickListener{
             viewModel.goBackFragment()

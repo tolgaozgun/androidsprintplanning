@@ -40,7 +40,7 @@ class ShareLobbyFragment : Fragment() {
         if(bundle != null){
             lobby = LobbyUtil.fromBundle(bundle)
             binding.txtRoomId.text = lobby.code
-
+            binding.imgQr.setImageBitmap(LobbyUtil.createQRCode(lobby.code))
 
 
         }
@@ -52,6 +52,18 @@ class ShareLobbyFragment : Fragment() {
 
         binding.imgBack.setOnClickListener {
             viewModel.goBackFragment()
+        }
+
+        binding.imgShareRoomId.setOnClickListener {
+            viewModel.shareQRCode(lobby.code)
+        }
+
+        binding.imgShareQr.setOnClickListener {
+            viewModel.shareQRImage(lobby.code, LobbyUtil.createQRCode(lobby.code))
+        }
+
+        binding.imgCopyRoomId.setOnClickListener {
+            viewModel.copyCodeToClipboard(lobby.code)
         }
     }
 

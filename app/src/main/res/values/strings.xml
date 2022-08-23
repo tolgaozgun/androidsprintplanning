@@ -43,5 +43,8 @@
     <string name="export_results">Export Results</string>
     <string name="disband_room">Disband Room</string>
 
+    <string name="vote">Vote</string>
+    <string name="default_username">Name</string>
+
 
 </resources>

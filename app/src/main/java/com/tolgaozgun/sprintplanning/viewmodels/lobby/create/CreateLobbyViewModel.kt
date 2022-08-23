@@ -1,6 +1,7 @@
 package com.tolgaozgun.sprintplanning.viewmodels.lobby.create
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -40,8 +41,16 @@ class CreateLobbyViewModel(
     fun createLobby() {
         val timeNow = System.currentTimeMillis()
 
-        val pendingLobby: Lobby = Lobby(
+        val sharedPreferences: SharedPreferences =
+            context.getSharedPreferences("local_user", Context.MODE_PRIVATE)
 
+
+        val idString: String = sharedPreferences.getString("id", null)!!
+
+        Log.d("UUID", idString)
+        val userList = listOf<UUID>(UUID.fromString(idString))
+
+        val pendingLobby: Lobby = Lobby(
             userLimit = mUserLimit,
             askToJoin = mAskToJoin,
             id = UUID.randomUUID(),
@@ -49,11 +58,9 @@ class CreateLobbyViewModel(
             status = LobbyState.WAITING,
             timeCreated = timeNow,
             timeUpdated = timeNow,
-            code = LobbyUtil.createCode()
-//            users = listOf<User>(),
+            code = LobbyUtil.createCode(),
+            users = userList,
         )
-
-
 
         viewModelScope.launch(Dispatchers.IO){
             val result: Lobby = lobbyRepository.createLobby(pendingLobby)
@@ -66,7 +73,7 @@ class CreateLobbyViewModel(
                     )
                 else ->
                     // Error
-                    Toast.makeText(context, "Error occurred during db connection", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Error occurred during connection", Toast.LENGTH_LONG).show()
             }
 
         }

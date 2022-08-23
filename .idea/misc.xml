@@ -6,6 +6,8 @@
         <entry key="..\:/Users/tolga/AndroidStudioProjects/SprintPlanning/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.332" />
         <entry key="..\:/Users/tolga/AndroidStudioProjects/SprintPlanning/app/src/main/res/drawable/ic_launcher_background.xml" value="0.332" />
         <entry key="..\:/Users/tolga/AndroidStudioProjects/SprintPlanning/app/src/main/res/drawable/round_rectangle_shape.xml" value="0.332" />
+        <entry key="..\:/Users/tolga/AndroidStudioProjects/SprintPlanning/app/src/main/res/drawable/vote_card.xml" value="0.358" />
+        <entry key="..\:/Users/tolga/AndroidStudioProjects/SprintPlanning/app/src/main/res/drawable/vote_card_rect.xml" value="0.2255" />
         <entry key="..\:/Users/tolga/AndroidStudioProjects/SprintPlanning/app/src/main/res/layout/activity_create_room.xml" value="0.5221374045801527" />
         <entry key="..\:/Users/tolga/AndroidStudioProjects/SprintPlanning/app/src/main/res/layout/activity_join_room.xml" value="0.67" />
         <entry key="..\:/Users/tolga/AndroidStudioProjects/SprintPlanning/app/src/main/res/layout/activity_main.xml" value="0.44321329639889195" />
@@ -19,6 +21,8 @@
         <entry key="..\:/Users/tolga/AndroidStudioProjects/SprintPlanning/app/src/main/res/layout/fragment_room_settings.xml" value="0.5" />
         <entry key="..\:/Users/tolga/AndroidStudioProjects/SprintPlanning/app/src/main/res/layout/fragment_settings.xml" value="0.67" />
         <entry key="..\:/Users/tolga/AndroidStudioProjects/SprintPlanning/app/src/main/res/layout/fragment_share_room.xml" value="0.9" />
+        <entry key="..\:/Users/tolga/AndroidStudioProjects/SprintPlanning/app/src/main/res/layout/player_card.xml" value="0.9" />
+        <entry key="..\:/Users/tolga/AndroidStudioProjects/SprintPlanning/app/src/main/res/layout/vote_card.xml" value="1.25" />
         <entry key="..\:/Users/tolga/AndroidStudioProjects/SprintPlanning/app/src/main/res/menu/bottom_navigation.xml" value="0.5578125" />
       </map>
     </option>

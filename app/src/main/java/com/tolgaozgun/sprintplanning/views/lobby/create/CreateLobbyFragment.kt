@@ -39,6 +39,14 @@ class CreateLobbyFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.slUserLimit.addOnChangeListener { slider, value, fromUser ->
+            viewModel.setUserLimit(value.toInt())
+        }
+
+        binding.swAskToJoin.setOnCheckedChangeListener { compoundButton, value ->
+            viewModel.setAskToJoin(value)
+        }
+
         binding.imgBack.setOnClickListener{
             viewModel.goBackFragment()
         }

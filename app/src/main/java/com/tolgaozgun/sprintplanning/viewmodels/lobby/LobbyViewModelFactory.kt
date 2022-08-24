@@ -1,4 +1,4 @@
-package com.tolgaozgun.sprintplanning.views.lobby
+package com.tolgaozgun.sprintplanning.viewmodels.lobby
 
 import android.content.Context
 import androidx.fragment.app.FragmentManager

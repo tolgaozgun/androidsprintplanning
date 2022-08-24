@@ -2,6 +2,7 @@ package com.tolgaozgun.sprintplanning.data.views
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tolgaozgun.sprintplanning.data.model.User
@@ -26,6 +27,8 @@ class UsersViewAdapter(private var context: Context,
                 }else{
                     txtVoteValue.text = ""
                 }
+                val visibilityValue: Int = if(user.hasVoted) View.VISIBLE else View.GONE
+                imgRing.visibility = visibilityValue
 
                 constraintLayoutPlayerCard.setOnClickListener {
                     listener.onItemClick(user)

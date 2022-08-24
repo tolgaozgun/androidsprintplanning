@@ -1,8 +1,6 @@
 package com.tolgaozgun.sprintplanning.viewmodels.lobby.join
 
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -14,13 +12,13 @@ import com.tolgaozgun.sprintplanning.views.lobby.LobbyFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class JoinLobbyViewModel(
+class JoinLobbyCameraViewModel (
     private var context: Context,
     fragmentManager: FragmentManager,
     private var lobbyRepository: LobbyRepository)
-    : TransactionViewModel(fragmentManager = fragmentManager) {
+: TransactionViewModel(fragmentManager = fragmentManager) {
 
-    fun joinRoom(input: String): Boolean{
+    fun joinRoom(shouldContinue: MutableLiveData<Boolean>, input: String): Boolean{
         var code: String = input.trim().uppercase()
         var shouldJoin: Boolean = false
 
@@ -34,10 +32,10 @@ class JoinLobbyViewModel(
                         shouldAddToBackStack = true,
                         arguments = LobbyUtil.createBundle(result)
                     )
-//                    shouldContinue.postValue(false)
+                    shouldContinue.postValue(false)
                 }
                 else ->{
-//                    shouldContinue.postValue(true)
+                    shouldContinue.postValue(true)
                 }
 
             }
@@ -46,5 +44,4 @@ class JoinLobbyViewModel(
         return shouldJoin
 
     }
-
 }

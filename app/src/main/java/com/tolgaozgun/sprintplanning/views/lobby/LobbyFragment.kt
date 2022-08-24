@@ -17,6 +17,8 @@ import com.tolgaozgun.sprintplanning.data.views.UsersViewAdapter
 import com.tolgaozgun.sprintplanning.data.views.VoteCardAdapter
 import com.tolgaozgun.sprintplanning.databinding.FragmentRoomBinding
 import com.tolgaozgun.sprintplanning.util.LobbyUtil
+import com.tolgaozgun.sprintplanning.viewmodels.lobby.LobbyViewModel
+import com.tolgaozgun.sprintplanning.viewmodels.lobby.LobbyViewModelFactory
 import com.tolgaozgun.sprintplanning.views.mainmenu.HomeFragment
 
 class LobbyFragment : Fragment() {
@@ -58,6 +60,14 @@ class LobbyFragment : Fragment() {
             binding.txtTitle.text = lobby.code
             binding.txtSubtitle.text = lobby.status.toString()
             usersViewAdapter.updateList(lobby.users, lobby.showResults)
+
+            var voted: Int = 0
+            for(user in lobby.users){
+                if(user.hasVoted)
+                    voted++
+            }
+
+            binding.txtVoteStatus.text = getString(R.string.vote_count, voted, lobby.users.count())
         })
     }
 

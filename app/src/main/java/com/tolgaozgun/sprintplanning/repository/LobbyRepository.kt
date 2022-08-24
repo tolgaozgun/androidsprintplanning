@@ -1,17 +1,13 @@
 package com.tolgaozgun.sprintplanning.repository
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.ListenerRegistration
 import com.tolgaozgun.sprintplanning.data.local.LobbyDatabase
 import com.tolgaozgun.sprintplanning.data.model.Lobby
 import com.tolgaozgun.sprintplanning.data.model.User
 import com.tolgaozgun.sprintplanning.data.remote.LobbyRemoteDataSource
-import com.tolgaozgun.sprintplanning.views.lobby.LobbyViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.tolgaozgun.sprintplanning.viewmodels.lobby.LobbyViewModel
 import java.util.*
 
 sealed class Result<out R> {
@@ -53,7 +49,8 @@ class LobbyRepository(
     }
 
     suspend fun subscribeLobby(context: Context, lobby: MutableLiveData<Lobby>,
-                               viewModel: LobbyViewModel): ListenerRegistration{
+                               viewModel: LobbyViewModel
+    ): ListenerRegistration{
         return remoteDataSource.subscribeLobby(context, lobby, viewModel)
     }
 
@@ -80,6 +77,20 @@ class LobbyRepository(
 
     suspend fun leaveLobby(context: Context, lobby: Lobby): Boolean{
         return remoteDataSource.leaveLobby(context, lobby)
+    }
+
+    suspend fun addLocalUser(context: Context){
+        return remoteDataSource.addLocalUser(context)
+    }
+
+    suspend fun subscribeUsers(context: Context, lobby: Lobby,
+                               users: MutableLiveData<MutableMap<UUID, ListenerRegistration>>,
+                               viewModel: LobbyViewModel){
+        return remoteDataSource.subscribeUsers(context, lobby, users, viewModel)
+    }
+
+    suspend fun getLobby(context: Context, code: String): Lobby?{
+        return remoteDataSource.getLobby(context, code)
     }
 
 }

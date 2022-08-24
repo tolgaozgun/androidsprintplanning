@@ -1,29 +1,20 @@
 package com.tolgaozgun.sprintplanning.data.remote
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
-import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
-import com.google.firebase.ktx.Firebase
-import com.tolgaozgun.sprintplanning.data.local.LobbyDatabase
 import com.tolgaozgun.sprintplanning.data.model.Lobby
 import com.tolgaozgun.sprintplanning.data.model.SerializedLobby
 import com.tolgaozgun.sprintplanning.data.model.User
-import com.tolgaozgun.sprintplanning.repository.LobbyRepository
 import com.tolgaozgun.sprintplanning.util.Converters
 import com.tolgaozgun.sprintplanning.util.FirebaseUtil
 import com.tolgaozgun.sprintplanning.util.LobbyUtil
 import com.tolgaozgun.sprintplanning.util.LocalUtil
-import com.tolgaozgun.sprintplanning.views.lobby.LobbyViewModel
+import com.tolgaozgun.sprintplanning.viewmodels.lobby.LobbyViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 class LobbyRemoteDataSource(
     private val firestore: FirebaseFirestore,
@@ -72,7 +63,9 @@ class LobbyRemoteDataSource(
         return true
     }
 
-    suspend fun subscribeLobby(context: Context, lobby: MutableLiveData<Lobby>, viewModel: LobbyViewModel): ListenerRegistration{
+    suspend fun subscribeLobby(context: Context, lobby: MutableLiveData<Lobby>,
+                               viewModel: LobbyViewModel
+    ): ListenerRegistration{
         val query = firestore.collection("lobbies").document(lobby.value!!.code)
         Log.d("REMOTE_DATA_SOURCE","Subscribing to ${lobby.value!!.code}")
         val registration = query.addSnapshotListener{ snapshot, e ->
@@ -80,15 +73,57 @@ class LobbyRemoteDataSource(
             if (snapshot != null && snapshot.exists()) {
                 Log.d("REMOTE_DATA_SOURCE","Subscription update entered")
                 viewModel.updateLobby(snapshot)
-//                viewModel.viewModelScope.launch {
-//                    Log.d("REMOTE_DATA_SOURCE","Subscription launch")
-//                    lobby.value = Lobby.loadSnapshot(context, snapshot)
-//                }
                 Log.d("REMOTE_DATA_SOURCE", "Execution finished")
             }
         }
         return registration
     }
+
+    suspend fun subscribeUsers(context: Context, lobby: Lobby,
+                               userList: MutableLiveData<MutableMap<UUID, ListenerRegistration>>,
+                               viewModel: LobbyViewModel){
+        val editedUserList: MutableSet<UUID>
+        if(userList.value != null && userList.value!!.keys.isNotEmpty()){
+            Log.d("REMOTE_DATA_SOURCE", "userList not null but: ${userList.value == null}")
+            editedUserList = userList.value!!.keys
+        }else{
+            Log.d("REMOTE_DATA_SOURCE", "userList null but: ${userList.value == null}")
+            editedUserList = mutableSetOf()
+            val newMap: MutableMap<UUID, ListenerRegistration> = mutableMapOf()
+            userList.value = newMap
+            Log.d("REMOTE_DATA_SOURCE", "now check it out: ${userList.value == null}")
+
+        }
+        val pendingSubscription: MutableList<UUID> = mutableListOf()
+        for(user in lobby.users){
+            if(editedUserList.contains(user.id)){
+                editedUserList.remove(user.id)
+            }else{
+                pendingSubscription.add(user.id)
+            }
+        }
+
+        // Remove ListenerRegistration of the disconnected player
+        // if ListenerRegistration is not null
+        for(remainingUser in editedUserList) {
+            userList.value!![remainingUser]?.remove()
+            userList.value!!.remove(remainingUser)
+        }
+        val usersRef: CollectionReference = firestore.collection("users")
+
+        firestore.runBatch{ batch ->
+            for(user in pendingSubscription){
+                Log.d("REMOTE_DATA_SOURCE", "is null: ${userList.value == null}")
+                userList.value!!.put(user, usersRef.document(user.toString()).addSnapshotListener{
+                    snapshot, e ->
+                        viewModel.reloadLobby()
+                })
+            }
+        }.await()
+
+
+    }
+
 
     suspend fun joinLobby(code: String, context: Context) : Lobby?{
         val lobbies: CollectionReference = firestore.collection("lobbies")

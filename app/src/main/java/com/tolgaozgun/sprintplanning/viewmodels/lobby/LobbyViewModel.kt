@@ -1,17 +1,15 @@
-package com.tolgaozgun.sprintplanning.views.lobby
+package com.tolgaozgun.sprintplanning.viewmodels.lobby
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.ListenerRegistration
 import com.tolgaozgun.sprintplanning.data.model.Lobby
+import com.tolgaozgun.sprintplanning.data.model.User
 import com.tolgaozgun.sprintplanning.repository.LobbyRepository
 import com.tolgaozgun.sprintplanning.util.LobbyUtil
 import com.tolgaozgun.sprintplanning.util.LocalUtil
@@ -19,7 +17,6 @@ import com.tolgaozgun.sprintplanning.viewmodels.TransactionViewModel
 import com.tolgaozgun.sprintplanning.views.lobby.settings.LobbySettingsFragment
 import com.tolgaozgun.sprintplanning.views.lobby.share.ShareLobbyFragment
 import com.tolgaozgun.sprintplanning.views.mainmenu.HomeFragment
-import com.tolgaozgun.sprintplanning.views.mainmenu.SettingsFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,11 +28,14 @@ class LobbyViewModel(
     fragmentManager: FragmentManager
 )   : TransactionViewModel(fragmentManager = fragmentManager)  {
 
-
+    private lateinit var lobbySubscription: ListenerRegistration
     var lobby: MutableLiveData<Lobby> = MutableLiveData<Lobby>()
+    var users: MutableLiveData<MutableMap<UUID, ListenerRegistration>> =
+        MutableLiveData<MutableMap<UUID, ListenerRegistration>>()
 
     fun leaveLobby(){
         viewModelScope.launch {
+            lobbySubscription.remove()
             lobbyRepository.leaveLobby(context, lobby.value!!)
             LocalUtil.removeLobbyFromLocal(context)
             replaceFragment(
@@ -55,8 +55,16 @@ class LobbyViewModel(
     }
 
     fun updateLobby(snapshot: DocumentSnapshot){
+        var instance: LobbyViewModel = this
         viewModelScope.launch {
             lobby.value = Lobby.loadSnapshot(context, snapshot)
+            lobbyRepository.subscribeUsers(context, lobby.value!!, users, instance)
+        }
+    }
+
+    fun reloadLobby(){
+        viewModelScope.launch {
+            lobby.postValue(lobbyRepository.getLobby(context, lobby.value!!.code))
         }
     }
 
@@ -64,7 +72,7 @@ class LobbyViewModel(
     fun subscribeToLobby(){
         var instance: LobbyViewModel = this
         viewModelScope.launch(Dispatchers.IO){
-            lobbyRepository.subscribeLobby(context, lobby, instance)
+            lobbySubscription = lobbyRepository.subscribeLobby(context, lobby, instance)
         }
     }
 
@@ -109,12 +117,8 @@ class LobbyViewModel(
                         }else{
                             Toast.makeText(context, "Resetting votes", Toast.LENGTH_LONG).show()
                         }
-
                         // TODO: Check this
                         lobby.value!!.showResults = latestState
-//                        val oldLobby: Lobby = lobby.value!!
-//                        oldLobby.showResults = latestState
-//                        lobby.value = oldLobby
                     }
                     false -> {
                         Toast.makeText(context, "Error while loading votes", Toast.LENGTH_LONG).show()

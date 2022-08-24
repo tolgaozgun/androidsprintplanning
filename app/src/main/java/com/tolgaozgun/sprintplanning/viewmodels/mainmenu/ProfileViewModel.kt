@@ -3,12 +3,16 @@ package com.tolgaozgun.sprintplanning.viewmodels.mainmenu
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.viewModelScope
 import com.tolgaozgun.sprintplanning.data.model.User
+import com.tolgaozgun.sprintplanning.repository.LobbyRepository
 import com.tolgaozgun.sprintplanning.util.LocalUtil
 import com.tolgaozgun.sprintplanning.viewmodels.TransactionViewModel
+import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     private val context: Context,
+    private val lobbyRepository: LobbyRepository,
     fragmentManager: FragmentManager
 )   : TransactionViewModel(fragmentManager = fragmentManager) {
 
@@ -24,6 +28,11 @@ class ProfileViewModel(
             // TODO: Avatar
             apply()
         }
+
+        viewModelScope.launch {
+            lobbyRepository.addLocalUser(context)
+        }
+
         return true
     }
 

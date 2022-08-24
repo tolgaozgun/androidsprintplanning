@@ -1,10 +1,15 @@
 package com.tolgaozgun.sprintplanning.repository
 
 import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.ListenerRegistration
 import com.tolgaozgun.sprintplanning.data.local.LobbyDatabase
 import com.tolgaozgun.sprintplanning.data.model.Lobby
 import com.tolgaozgun.sprintplanning.data.model.User
 import com.tolgaozgun.sprintplanning.data.remote.LobbyRemoteDataSource
+import com.tolgaozgun.sprintplanning.views.lobby.LobbyViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -39,12 +44,17 @@ class LobbyRepository(
         return remoteDataSource.joinLobby(id, context)
     }
 
-    suspend fun createLobby(pendingLobby: Lobby) : Lobby{
-        return remoteDataSource.createLobby(pendingLobby)
+    suspend fun createLobby(context: Context, pendingLobby: Lobby) : Lobby{
+        return remoteDataSource.createLobby(context, pendingLobby)
     }
 
-    suspend fun voteLobby(vote: Int, userIdString: String): Boolean {
-        return remoteDataSource.vote(vote, userIdString)
+    suspend fun voteLobby(context: Context, vote: Int): Boolean {
+        return remoteDataSource.vote(context, vote)
+    }
+
+    suspend fun subscribeLobby(context: Context, lobby: MutableLiveData<Lobby>,
+                               viewModel: LobbyViewModel): ListenerRegistration{
+        return remoteDataSource.subscribeLobby(context, lobby, viewModel)
     }
 
     suspend fun loadUsersWithString(stringList: List<String>): List<User>{
@@ -62,6 +72,14 @@ class LobbyRepository(
 
     suspend fun updateUser(context: Context): Boolean{
         return remoteDataSource.updateUser(context)
+    }
+
+    suspend fun showResults(context: Context, lobby: Lobby, value: Boolean): Boolean{
+        return remoteDataSource.showResults(context, lobby, value)
+    }
+
+    suspend fun leaveLobby(context: Context, lobby: Lobby): Boolean{
+        return remoteDataSource.leaveLobby(context, lobby)
     }
 
 }

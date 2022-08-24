@@ -18,6 +18,7 @@
     <string name="second_short">s</string>
     <string name="vote_count">$1%/$2% players voted</string>
     <string name="show_results">Show Results</string>
+    <string name="reset_vote">Reset Vote</string>
     <string name="settings">Settings</string>
     <string name="font_size">Font size</string>
     <string name="change_font_size">Change font size application wide</string>

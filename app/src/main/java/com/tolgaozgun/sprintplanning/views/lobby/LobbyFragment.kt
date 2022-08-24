@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tolgaozgun.sprintplanning.R
 import com.tolgaozgun.sprintplanning.data.model.Lobby
 import com.tolgaozgun.sprintplanning.data.views.UsersViewAdapter
 import com.tolgaozgun.sprintplanning.data.views.VoteCardAdapter
@@ -24,11 +26,9 @@ class LobbyFragment : Fragment() {
     private lateinit var binding: FragmentRoomBinding
     private lateinit var viewModel: LobbyViewModel
     private lateinit var viewModelFactory: LobbyViewModelFactory
-    private lateinit var lobby: Lobby
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -37,35 +37,45 @@ class LobbyFragment : Fragment() {
     ): View? {
         binding = FragmentRoomBinding.inflate(inflater, container, false)
 
-        setupView()
-        setupVoteCard()
-        setupUsersView()
-
-        return binding.root
-    }
-
-    override fun onStart() {
-        super.onStart()
         val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
         viewModelFactory = LobbyViewModelFactory(fragmentManager = fragmentManager,
             context = requireContext())
         viewModel = viewModelFactory.create(LobbyViewModel::class.java)
 
+        setupView()
+        setupVoteCard()
+        setupUsersView()
+        setupObserver()
+
+        return binding.root
     }
+
+    private fun setupObserver(){
+        viewModel.lobby.observe(viewLifecycleOwner, Observer<Lobby> { lobby ->
+            Log.d("LOBBY_OBSERVER", "Observing lobby livedata.. (UPDATE)")
+            Log.d("LOBBY_OBSERVER", "Observing lobby livedata.. userCOunt: ${lobby.users.count()}")
+
+            binding.txtTitle.text = lobby.code
+            binding.txtSubtitle.text = lobby.status.toString()
+            usersViewAdapter.updateList(lobby.users, lobby.showResults)
+        })
+    }
+
 
     private fun setupView(){
         val bundle: Bundle? = arguments
         if(bundle != null){
-            lobby = LobbyUtil.fromBundle(bundle)
-            binding.txtTitle.text = lobby.name
-            binding.txtSubtitle.text = lobby.status.toString()
+            viewModel.lobby.value = LobbyUtil.fromBundle(bundle)
+            binding.txtTitle.text = viewModel.lobby.value!!.name
+            binding.txtSubtitle.text = viewModel.lobby.value!!.status.toString()
         }
+        viewModel.subscribeToLobby()
     }
 
     private fun setupVoteCard(){
         val listener =
             VoteCardAdapter.VoteCardClickListener { item ->
-                Toast.makeText(requireContext(), "Item Clicked $item", Toast.LENGTH_LONG).show()
+                viewModel.vote(item)
             }
 
         voteCardAdapter = VoteCardAdapter(requireContext(), listener)
@@ -79,17 +89,14 @@ class LobbyFragment : Fragment() {
                 Toast.makeText(requireContext(), "User Clicked ${user.name}", Toast.LENGTH_SHORT).show()
             }
 
-        usersViewAdapter = UsersViewAdapter(requireContext(), lobby.users, listener)
+        usersViewAdapter = UsersViewAdapter(requireContext(), viewModel.lobby.value!!.users, viewModel.lobby.value!!.showResults, listener)
         binding.recyclerViewUsers.adapter = usersViewAdapter
         binding.recyclerViewUsers.layoutManager = GridLayoutManager(requireContext(), 3)
-
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
 
         // TODO: Add a menu to confirm leave
         binding.imgLeave.setOnClickListener{
@@ -101,11 +108,26 @@ class LobbyFragment : Fragment() {
         // Only admins should be able to change room settings
         // (Should users be able to display them?)
         binding.imgSettings.setOnClickListener{
-            viewModel.openSettings(lobby)
+            viewModel.openSettings()
         }
 
         binding.imgRoomShare.setOnClickListener{
-            viewModel.openShare(lobby)
+            viewModel.openShare()
+        }
+
+        binding.btnShowResults.setOnClickListener {
+            var result: Boolean? = viewModel.showResults()
+            if(result != null){
+                if(result){
+                    binding.btnShowResults.setText(R.string.reset_vote)
+                }else{
+                    binding.btnShowResults.setText(R.string.show_results)
+                }
+            }
+        }
+
+        binding.imgLeave.setOnClickListener {
+            viewModel.leaveLobby()
         }
     }
 }

@@ -61,10 +61,11 @@ class CreateLobbyViewModel(
             timeUpdated = timeNow,
             code = LobbyUtil.createCode(),
             users = userList,
+            showResults = false,
         )
 
         viewModelScope.launch(Dispatchers.IO){
-            val result: Lobby = lobbyRepository.createLobby(pendingLobby)
+            val result: Lobby = lobbyRepository.createLobby(context, pendingLobby)
             when(result){
                 is Lobby ->
                     replaceFragment(

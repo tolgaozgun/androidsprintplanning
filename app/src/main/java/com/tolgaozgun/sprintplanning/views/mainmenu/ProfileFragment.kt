@@ -27,6 +27,8 @@ class ProfileFragment : Fragment() {
         viewModelFactory = ProfileViewModelFactory(fragmentManager = fragmentManager,
             context = requireContext())
         viewModel = viewModelFactory.create(ProfileViewModel::class.java)
+
+        binding.edtName.setText(viewModel.getUsername(requireContext()))
     }
 
     override fun onCreateView(

@@ -1,6 +1,7 @@
 package com.tolgaozgun.sprintplanning.data.model
 
 import android.content.Context
+import android.util.Log
 import androidx.room.*
 import com.google.firebase.firestore.DocumentSnapshot
 import com.tolgaozgun.sprintplanning.repository.LobbyRepository
@@ -21,6 +22,7 @@ data class Lobby(
     @TypeConverters(Converters::class)      var users: List<User>,
     @ColumnInfo(name="status")              var status: LobbyState,
     @ColumnInfo(name="ask_to_join")         var askToJoin: Boolean,
+    @ColumnInfo(name="show_results")        var showResults: Boolean,
 ){
     companion object{
 
@@ -31,7 +33,7 @@ data class Lobby(
                     userList.add(user.id.toString())
                 }
                 return SerializedLobby(id.toString(), code, name, userLimit, timeCreated,
-                    timeUpdated, userList.toList(), status.toString(), askToJoin)
+                    timeUpdated, userList.toList(), status.toString(), askToJoin, showResults)
             }
         }
 
@@ -43,11 +45,11 @@ data class Lobby(
                 val lobbyState: LobbyState = LobbyState.valueOf(status)
 
                 return Lobby(convertedId, code, name, userLimit, timeCreated, timeUpdated,
-                    userList.toList(), lobbyState, askToJoin)
+                    userList.toList(), lobbyState, askToJoin, showResults)
             }
         }
 
-        fun loadSnapshot(snapshot: DocumentSnapshot): Lobby{
+        suspend fun loadSnapshot(context: Context, snapshot: DocumentSnapshot): Lobby{
             val map: Map<String, Any> = snapshot.data as Map<String, Any>
 
             val idString: String = map["id"] as String
@@ -59,15 +61,15 @@ data class Lobby(
             val stringList: List<String> = map["users"] as List<String>
             val status: String = map["status"] as String
             val askToJoin: Boolean = map["askToJoin"] as Boolean
+            val showResults: Boolean = map["showResults"] as Boolean
 
             val convertedId: UUID = UUID.fromString(idString)
             val lobbyState: LobbyState = LobbyState.valueOf(status)
-            val userList: MutableList<User> = mutableListOf()
-            for(userString in stringList){
-                userList.add(Converters.stringToUser(userString))
-            }
+            val userList: List<User> =
+                LobbyRepository.getInstance(context).loadUsersWithString(stringList)
+            Log.d("LOAD_SNAPSHOT", "Lobby code: $code, name: $name")
             return Lobby(convertedId, code, name, userLimit, timeCreated, timeUpdated,
-                userList.toList(), lobbyState, askToJoin)
+                userList.toList(), lobbyState, askToJoin, showResults)
         }
     }
 
@@ -84,5 +86,6 @@ class SerializedLobby(
     var timeUpdated: Long,
     var users: List<String>,
     var status: String,
-    var askToJoin: Boolean
+    var askToJoin: Boolean,
+    var showResults: Boolean,
 )

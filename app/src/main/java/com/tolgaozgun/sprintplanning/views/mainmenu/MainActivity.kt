@@ -51,6 +51,8 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+        viewModel.checkLobby(this)
+
 
     }
 

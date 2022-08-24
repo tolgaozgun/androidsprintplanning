@@ -3,6 +3,8 @@ package com.tolgaozgun.sprintplanning.viewmodels.mainmenu
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.fragment.app.FragmentManager
+import com.tolgaozgun.sprintplanning.data.model.User
+import com.tolgaozgun.sprintplanning.util.LocalUtil
 import com.tolgaozgun.sprintplanning.viewmodels.TransactionViewModel
 
 class ProfileViewModel(
@@ -23,6 +25,11 @@ class ProfileViewModel(
             apply()
         }
         return true
+    }
+
+    fun getUsername(context: Context): String{
+        var user: User = LocalUtil.loadLocalUser(context)
+        return user.name
     }
 
 }

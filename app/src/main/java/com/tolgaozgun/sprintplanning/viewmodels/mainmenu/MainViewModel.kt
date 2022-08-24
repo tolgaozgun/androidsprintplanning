@@ -3,11 +3,15 @@ package com.tolgaozgun.sprintplanning.viewmodels.mainmenu
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import com.tolgaozgun.sprintplanning.data.model.Lobby
 import com.tolgaozgun.sprintplanning.repository.LobbyRepository
+import com.tolgaozgun.sprintplanning.util.LobbyUtil
+import com.tolgaozgun.sprintplanning.util.LocalUtil
 import com.tolgaozgun.sprintplanning.viewmodels.TransactionViewModel
+import com.tolgaozgun.sprintplanning.views.lobby.LobbyFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
@@ -44,13 +48,23 @@ class MainViewModel(
     }
 
     fun checkLobby(context: Context){
-        val sharedPreferences: SharedPreferences =
-            context.getSharedPreferences("lobby", Context.MODE_PRIVATE)
-        if(sharedPreferences.contains("current")){
-            val lobbyCode: String = sharedPreferences.getString("current", null)!!
-
-            //TODO: Check all lobbies if this user exists, if so forcefully enter.
-            // (Should multiple instances of user be expected?)
+        if(LocalUtil.isJoinedLobby(context)){
+            val code: String = LocalUtil.getLocalLobbyCode(context)!!
+            viewModelScope.launch {
+                when(val lobby: Lobby? = lobbyRepository.joinLobby(code, context)){
+                    is Lobby -> {
+                        Toast.makeText(context, "You were joined back to your previous lobby", Toast.LENGTH_SHORT).show()
+                        replaceFragment(
+                            fragment = LobbyFragment(),
+                            shouldAddToBackStack = true,
+                            arguments = LobbyUtil.createBundle(lobby)
+                        )
+                    }
+                    else -> {
+                        Toast.makeText(context, "Your previous lobby was disbanded, cannot join.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
     }
 }

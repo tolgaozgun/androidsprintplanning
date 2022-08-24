@@ -33,7 +33,7 @@
         android:layout_marginStart="31dp"
         android:layout_marginTop="20dp"
         android:fontFamily="@font/roboto_light"
-        android:text="18/22 players voted"
+        android:text="@string/vote_count"
         android:textColor="@color/black"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -96,7 +96,6 @@
                 android:id="@+id/linear_layout_vote_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#00ee33"
                 android:orientation="horizontal"
                 android:scrollbars="horizontal|none">
 

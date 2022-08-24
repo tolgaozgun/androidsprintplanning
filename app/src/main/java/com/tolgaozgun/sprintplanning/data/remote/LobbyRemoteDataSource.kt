@@ -3,11 +3,12 @@ package com.tolgaozgun.sprintplanning.data.remote
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
 import com.google.firebase.ktx.Firebase
 import com.tolgaozgun.sprintplanning.data.local.LobbyDatabase
 import com.tolgaozgun.sprintplanning.data.model.Lobby
@@ -18,12 +19,11 @@ import com.tolgaozgun.sprintplanning.util.Converters
 import com.tolgaozgun.sprintplanning.util.FirebaseUtil
 import com.tolgaozgun.sprintplanning.util.LobbyUtil
 import com.tolgaozgun.sprintplanning.util.LocalUtil
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.runBlocking
+import com.tolgaozgun.sprintplanning.views.lobby.LobbyViewModel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 class LobbyRemoteDataSource(
     private val firestore: FirebaseFirestore,
@@ -47,10 +47,18 @@ class LobbyRemoteDataSource(
     }
 
     suspend fun leaveLobby(context: Context, lobby: Lobby): Boolean{
-        val lobbies: CollectionReference = firestore.collection("lobbies")
-
+        val lobbiesRef: CollectionReference = firestore.collection("lobbies")
+        val lobby = lobbiesRef.document(lobby.code)
+        val localUser: User = LocalUtil.loadLocalUser(context)
+        lobby.update("users", FieldValue.arrayRemove(localUser.id.toString()))
         clearLocalUserVote(context)
         return true
+    }
+
+    suspend fun addLocalUser(context: Context){
+        val user: User = LocalUtil.loadLocalUser(context)
+        val users: CollectionReference = firestore.collection("users")
+        users.document(user.id.toString()).set(User.serialize(user))
     }
 
     suspend fun clearLocalUserVote(context: Context): Boolean{
@@ -59,9 +67,27 @@ class LobbyRemoteDataSource(
         val userRef = users.document(user.id.toString())
         firestore.runBatch {
             userRef.update("vote", -1)
-            userRef.update("has_voted", false)
+            userRef.update("hasVoted", false)
         }.await()
         return true
+    }
+
+    suspend fun subscribeLobby(context: Context, lobby: MutableLiveData<Lobby>, viewModel: LobbyViewModel): ListenerRegistration{
+        val query = firestore.collection("lobbies").document(lobby.value!!.code)
+        Log.d("REMOTE_DATA_SOURCE","Subscribing to ${lobby.value!!.code}")
+        val registration = query.addSnapshotListener{ snapshot, e ->
+            Log.d("REMOTE_DATA_SOURCE","Subscription update ${snapshot == null}")
+            if (snapshot != null && snapshot.exists()) {
+                Log.d("REMOTE_DATA_SOURCE","Subscription update entered")
+                viewModel.updateLobby(snapshot)
+//                viewModel.viewModelScope.launch {
+//                    Log.d("REMOTE_DATA_SOURCE","Subscription launch")
+//                    lobby.value = Lobby.loadSnapshot(context, snapshot)
+//                }
+                Log.d("REMOTE_DATA_SOURCE", "Execution finished")
+            }
+        }
+        return registration
     }
 
     suspend fun joinLobby(code: String, context: Context) : Lobby?{
@@ -77,15 +103,15 @@ class LobbyRemoteDataSource(
                     Log.d("JOIN_OBBY", "Checking $currentCode against our $code")
 
                     if(currentCode == code){
-                        lobby = Lobby.loadSnapshot(existingLobby)
+                        lobby = Lobby.loadSnapshot(context, existingLobby)
                         break
                     }
                 }
             }
         }
 
-
         if(lobby != null){
+            addLocalUser(context)
             val userList: MutableList<User> = lobby.users.toMutableList()
             val localUser: User = LocalUtil.loadLocalUser(context)
 
@@ -94,14 +120,18 @@ class LobbyRemoteDataSource(
 
             val serializedLobby: SerializedLobby = Lobby.serialize(lobby)
             lobbies.document(lobby.code).update("users", serializedLobby.users).await()
-            var addedLobby = lobbies.document(lobby.code).get().await()
-            if(addedLobby != null){
-                return Lobby.loadSnapshot(addedLobby)
-            }
+            return getLobby(context, lobby.code)
         }else{
-            Log.d("JOIN_LOBBY", "Lobby not found")
             // TODO: Join failed
             return null
+        }
+    }
+
+    suspend fun getLobby(context: Context, code: String): Lobby?{
+        val lobbies: CollectionReference = firestore.collection("lobbies")
+        var addedLobby = lobbies.document(code).get().await()
+        if(addedLobby != null){
+            return Lobby.loadSnapshot(context, addedLobby)
         }
         return null
     }
@@ -117,16 +147,42 @@ class LobbyRemoteDataSource(
         return true
     }
 
-    suspend fun vote(value: Int, userId: String): Boolean{
+    suspend fun vote(context: Context, value: Int): Boolean{
+        val localUser: User = LocalUtil.loadLocalUser(context)
         val users: CollectionReference = firestore.collection("users")
-        val user = users.document(userId)
+        Log.d("VOTE", "userid: ${localUser.id.toString()}")
+        val user = users.document(localUser.id.toString())
 
         firestore.runBatch{ batch ->
             user.update("vote", value)
-            user.update("has_voted", true)
+            user.update("hasVoted", true)
         }.await()
 
         return true
+    }
+
+    suspend fun showResults(context: Context, lobby: Lobby, value: Boolean): Boolean{
+        val lobbies: CollectionReference = firestore.collection("lobbies")
+        lobbies.document(lobby.code).update("showResults", value).await()
+        if(!value)
+            resetVotes(context, lobby)
+        return true
+    }
+
+    suspend fun resetVotes(context: Context, lobby: Lobby){
+        val usersRef: CollectionReference = firestore.collection("users")
+
+        val lobby: Lobby? = getLobby(context, lobby.code)
+        if(lobby != null){
+            val users = lobby.users
+            firestore.runBatch { batch ->
+                for(user in users){
+                    usersRef.document(user.id.toString()).update("vote", -1)
+                    usersRef.document(user.id.toString()).update("hasVoted", false)
+                }
+            }.await()
+        }
+
     }
 
     suspend fun loadUsers(uuidList: List<UUID>): List<User>{
@@ -144,7 +200,7 @@ class LobbyRemoteDataSource(
         return userList.toList()
     }
 
-    suspend fun createLobby(pendingLobby: Lobby) : Lobby{
+    suspend fun createLobby(context: Context, pendingLobby: Lobby) : Lobby{
         val lobbies: CollectionReference = firestore.collection("lobbies")
         val codes: MutableList<String> = mutableListOf()
 
@@ -167,6 +223,7 @@ class LobbyRemoteDataSource(
         }
         serializedLobby.code = currentCode
 
+        addLocalUser(context)
         //TODO: Add success and error returns
         lobbies.document(serializedLobby.code).set(serializedLobby)
             .addOnSuccessListener { snapshot ->

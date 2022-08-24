@@ -10,13 +10,37 @@ import java.util.*
 @Entity
 data class User(
     @PrimaryKey                         var id: UUID,
-    @ColumnInfo(name="name")            var name: String?,
-    @ColumnInfo(name="avatar_url")      var avatarUrl: String?,
-    @ColumnInfo(name="vote")            var vote: Int?,
-    @ColumnInfo(name="has_voted")       var hasVoted: Boolean,
+    @ColumnInfo(name="name")            var name: String = "Name",
+    @ColumnInfo(name="avatar_url")      var avatarUrl: String = "local/face1",
+    @ColumnInfo(name="vote")            var vote: Int = -1,
+    @ColumnInfo(name="hasVoted")        var hasVoted: Boolean,
 ){
+    companion object{
+        fun serialize(user: User): SerializedUser{
+            with(user){
+                return SerializedUser(id.toString(), name, avatarUrl, vote, hasVoted)
+            }
+        }
+
+        fun deSerialize(serializedUser: SerializedUser): User{
+            with(serializedUser){
+                return User(UUID.fromString(id), name, avatarUrl, vote, hasVoted)
+            }
+        }
+    }
 
 }
+
+
+
+data class SerializedUser(
+    var id: String,
+    var name: String = "Name",
+    var avatarUrl: String = "local/face1",
+    var vote: Int = -1,
+    var hasVoted: Boolean = false,
+)
+
 
 
 

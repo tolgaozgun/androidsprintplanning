@@ -79,6 +79,8 @@ class LobbyUtil {
                 bundle.putString("status", status.toString())
                 bundle.putString("users", Converters.userListToString(users))
                 bundle.putBoolean("ask_to_join", askToJoin)
+                bundle.putBoolean("show_results", showResults)
+                Log.d("BUNDLE_CREATE", "Code: $code and name: $name")
             }
             return bundle
         }
@@ -93,8 +95,10 @@ class LobbyUtil {
             val status: LobbyState = LobbyState.valueOf(bundle.getString("status")!!)
             val askToJoin: Boolean = bundle.getBoolean("ask_to_join")
             val users: List<User> = Converters.stringToUserList(bundle.getString("users")!!)
+            val showResults: Boolean = bundle.getBoolean("show_results")
 
-            return Lobby(id, name, code, userLimit, timeCreated, timeUpdated, users, status, askToJoin)
+            return Lobby(id, code, name, userLimit, timeCreated, timeUpdated, users, status,
+                askToJoin, showResults)
         }
 
         fun createQRCode(content: String): Bitmap{

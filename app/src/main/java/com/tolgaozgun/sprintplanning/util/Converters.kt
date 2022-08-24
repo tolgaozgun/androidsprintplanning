@@ -74,7 +74,7 @@ class Converters {
         }
 
         fun stringToUser(value: String): User {
-            val userType = object : TypeToken<com.tolgaozgun.sprintplanning.data.model.User>() {}.type
+            val userType = object : TypeToken<User>() {}.type
             return Gson().fromJson(value, userType)
         }
 
@@ -83,9 +83,15 @@ class Converters {
 
             val idString: String = map["id"] as String
             val name: String = map["name"] as String
-            val avatarUrl: String = map["avatar"] as String
+
+
+            val avatarUrl: String = if(map["avatar"] == null){
+                ""
+            }else{
+                map["avatar"] as String
+            }
             val vote: Int = (map["vote"] as Long).toInt()
-            val hasVoted: Boolean = map["has_voted"] as Boolean
+            val hasVoted: Boolean = map["hasVoted"] as Boolean
 
             return User(UUID.fromString(idString), name, avatarUrl, vote, hasVoted)
         }
@@ -102,6 +108,7 @@ class Converters {
             val stringList: List<String> = map["users"] as List<String>
             val status: String = map["status"] as String
             val askToJoin: Boolean = map["askToJoin"] as Boolean
+            val showResults: Boolean = map["showResults"] as Boolean
 
             val convertedId: UUID = UUID.fromString(idString)
             val lobbyState: LobbyState = LobbyState.valueOf(status)
@@ -110,7 +117,7 @@ class Converters {
                 userList.add(stringToUser(userString))
             }
             return Lobby(convertedId, code, name, userLimit, timeCreated, timeUpdated,
-                userList.toList(), lobbyState, askToJoin)
+                userList.toList(), lobbyState, askToJoin, showResults)
         }
 
     }

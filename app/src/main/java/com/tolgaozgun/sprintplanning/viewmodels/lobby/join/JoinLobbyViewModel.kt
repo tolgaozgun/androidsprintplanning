@@ -19,11 +19,13 @@ class JoinLobbyViewModel(
     private var lobbyRepository: LobbyRepository)
     : TransactionViewModel(fragmentManager = fragmentManager) {
 
-    fun joinRoom(input: String){
+    fun joinRoom(input: String): Boolean{
 
         var code: String = input.trim().uppercase()
+        var shouldJoin: Boolean = false
+
         viewModelScope.launch(Dispatchers.IO){
-            val result: Lobby? = lobbyRepository.joinLobby(code, context)
+            var result: Lobby? = lobbyRepository.joinLobby(code, context)
             when(result){
                 is Lobby ->{
                     Log.d("LOBBY_JOIN", "Lobby is loaded, with no of users: ${result.users.count()}")
@@ -32,14 +34,17 @@ class JoinLobbyViewModel(
                         shouldAddToBackStack = true,
                         arguments = LobbyUtil.createBundle(result)
                     )
+                    shouldJoin = true
                 }
-                else ->
+                else ->{
                     Log.d("JOIN_LOBBY", "Failed to join")
-                    // Error
-//                    Toast.makeText(context, "Error while joining, no room found", Toast.LENGTH_LONG).show()
+                    shouldJoin = false
+                }
+
             }
 
         }
+        return shouldJoin
 
     }
 

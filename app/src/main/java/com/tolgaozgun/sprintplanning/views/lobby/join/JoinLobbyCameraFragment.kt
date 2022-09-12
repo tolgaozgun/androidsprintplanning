@@ -1,6 +1,7 @@
 package com.tolgaozgun.sprintplanning.views.lobby.join
 
 import android.Manifest
+import android.app.ProgressDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.google.android.gms.vision.CameraSource
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.barcode.Barcode
@@ -39,6 +41,8 @@ class JoinLobbyCameraFragment : Fragment() {
     private lateinit var detector: BarcodeDetector
     private lateinit var cameraSource: CameraSource
     private var shouldContinue: MutableLiveData<Boolean> = MutableLiveData<Boolean>(true)
+    private var progressDialog: ProgressDialog? = null
+    var isJoining: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
 
     private val processor = object : Detector.Processor<Barcode> {
         override fun release() {}
@@ -115,8 +119,17 @@ class JoinLobbyCameraFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
+    private fun showProgressDialog(code: String){
+        progressDialog = ProgressDialog(requireContext())
+        progressDialog!!.setMessage("Joining lobby $code...")
+        progressDialog!!.setCancelable(false)
+        progressDialog!!.show()
+    }
 
     override fun onDestroy() {
+        if(progressDialog != null && progressDialog!!.isShowing){
+            progressDialog!!.dismiss()
+        }
         super.onDestroy()
         detector.release()
         cameraSource.stop()
@@ -130,6 +143,11 @@ class JoinLobbyCameraFragment : Fragment() {
             fragmentManager = fragmentManager)
         viewModel = viewModelFactory.create(JoinLobbyCameraViewModel::class.java)
 
+        isJoining.observe(viewLifecycleOwner, Observer<Boolean>{ isJoining ->
+            if(progressDialog != null && progressDialog!!.isShowing && !isJoining){
+                progressDialog!!.dismiss()
+            }
+        })
         setupBarcode()
     }
 
@@ -144,8 +162,10 @@ class JoinLobbyCameraFragment : Fragment() {
 
 
     private fun readCode(value: String){
+        isJoining.postValue(true)
+        showProgressDialog(value)
         Log.d("qr", "Read code $value")
-        viewModel.joinRoom(shouldContinue, value)
+        viewModel.joinRoom(shouldContinue, value, isJoining)
     }
 
     override fun onCreateView(

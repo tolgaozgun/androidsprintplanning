@@ -1,10 +1,13 @@
 package com.tolgaozgun.sprintplanning.data.views
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tolgaozgun.sprintplanning.R
 import com.tolgaozgun.sprintplanning.data.model.User
 import com.tolgaozgun.sprintplanning.databinding.PlayerCardBinding
 
@@ -17,11 +20,18 @@ class UsersViewAdapter(private var context: Context,
         fun onItemClick(user: User)
     }
 
-    class UsersViewHolder(private var binding: PlayerCardBinding): RecyclerView.ViewHolder(binding.root){
+    class UsersViewHolder(private var context: Context,
+                          private var binding: PlayerCardBinding): RecyclerView.ViewHolder(binding.root){
 
         fun bind(user: User, position: Int, showResults: Boolean, listener: UsersViewClickListener){
             with(binding){
-                txtName.text = user.name
+                val name: String = if(user.name.length > 10){
+                    user.name.take(7) + "..."
+                }else{
+                    user.name
+                }
+                txtName.text = name
+
                 if(showResults && user.hasVoted){
                     txtVoteValue.text = user.vote.toString()
                 }else{
@@ -29,6 +39,12 @@ class UsersViewAdapter(private var context: Context,
                 }
                 val visibilityValue: Int = if(user.hasVoted) View.VISIBLE else View.GONE
                 imgRing.visibility = visibilityValue
+                if(user.hasChangedVote){
+                    imgRing.setColorFilter(ContextCompat.getColor(context, R.color.yellow))
+                }else{
+                    imgRing.setColorFilter(ContextCompat.getColor(context, R.color.green))
+                }
+                imgAvatar.setImageBitmap(user.avatar)
 
                 constraintLayoutPlayerCard.setOnClickListener {
                     listener.onItemClick(user)
@@ -39,7 +55,7 @@ class UsersViewAdapter(private var context: Context,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsersViewHolder {
         val itemBinding = PlayerCardBinding.inflate(LayoutInflater.from(context), parent, false)
-        return UsersViewHolder(itemBinding)
+        return UsersViewHolder(context, itemBinding)
     }
 
     override fun onBindViewHolder(holder: UsersViewHolder, position: Int) {

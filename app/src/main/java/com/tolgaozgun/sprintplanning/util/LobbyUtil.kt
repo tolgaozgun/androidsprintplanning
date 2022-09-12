@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import com.tolgaozgun.sprintplanning.data.model.Lobby
@@ -14,6 +15,8 @@ import java.util.*
 class LobbyUtil {
 
     companion object{
+        public var isInLobby: Boolean = false
+        public var lobby: MutableLiveData<Lobby>? = MutableLiveData<Lobby>()
         private var MIN_LETTER_COUNT = 2
         private var MIN_NUMBER_COUNT = 2
         private var CODE_LENGTH = 6
@@ -73,12 +76,10 @@ class LobbyUtil {
                 bundle.putString("name", name)
                 bundle.putString("id", id.toString())
                 bundle.putString("code", code)
-                bundle.putInt("user_limit", userLimit)
                 bundle.putLong("time_created", timeCreated)
                 bundle.putLong("time_updated", timeUpdated)
                 bundle.putString("status", status.toString())
                 bundle.putString("users", Converters.userListToString(users))
-                bundle.putBoolean("ask_to_join", askToJoin)
                 bundle.putBoolean("show_results", showResults)
                 Log.d("BUNDLE_CREATE", "Code: $code and name: $name")
             }
@@ -89,16 +90,13 @@ class LobbyUtil {
             val name: String = bundle.getString("name")!!
             val id: UUID = UUID.fromString(bundle.getString("id"))
             val code: String = bundle.getString("code")!!
-            val userLimit: Int = bundle.getInt("user_limit")
             val timeCreated: Long = bundle.getLong("time_created")
             val timeUpdated: Long = bundle.getLong("time_updated")
             val status: LobbyState = LobbyState.valueOf(bundle.getString("status")!!)
-            val askToJoin: Boolean = bundle.getBoolean("ask_to_join")
             val users: List<User> = Converters.stringToUserList(bundle.getString("users")!!)
             val showResults: Boolean = bundle.getBoolean("show_results")
 
-            return Lobby(id, code, name, userLimit, timeCreated, timeUpdated, users, status,
-                askToJoin, showResults)
+            return Lobby(id, code, name, timeCreated, timeUpdated, users, status, showResults)
         }
 
         fun createQRCode(content: String): Bitmap{

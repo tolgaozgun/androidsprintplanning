@@ -13,7 +13,6 @@
         android:layout_marginTop="40dp"
         android:fontFamily="@font/roboto_bold"
         android:text="@string/join_room"
-        android:textColor="@color/black"
         android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +38,6 @@
         android:layout_marginTop="56dp"
         android:fontFamily="@font/roboto"
         android:text="@string/room_id"
-        android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_title" />
@@ -52,7 +50,6 @@
         android:layout_marginTop="30dp"
         android:fontFamily="@font/roboto"
         android:text="@string/qr_code"
-        android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_seperator" />
@@ -66,7 +63,6 @@
         android:shadowColor="@color/gray"
         android:shadowRadius="2"
         android:textAllCaps="true"
-        android:textColor="@color/black"
         android:textSize="32sp"
         app:layout_constraintStart_toEndOf="@+id/txt_room_id_title"
         app:layout_constraintTop_toBottomOf="@+id/txt_title" />

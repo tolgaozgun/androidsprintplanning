@@ -11,6 +11,8 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.tolgaozgun.sprintplanning.data.model.Lobby
 import com.tolgaozgun.sprintplanning.data.model.User
 import com.tolgaozgun.sprintplanning.repository.LobbyRepository
+import com.tolgaozgun.sprintplanning.repository.UserRepository
+import com.tolgaozgun.sprintplanning.util.Converters
 import com.tolgaozgun.sprintplanning.util.LobbyUtil
 import com.tolgaozgun.sprintplanning.util.LocalUtil
 import com.tolgaozgun.sprintplanning.viewmodels.TransactionViewModel
@@ -35,15 +37,22 @@ class LobbyViewModel(
 
     fun leaveLobby(){
         viewModelScope.launch {
+            LobbyUtil.isInLobby = false
             lobbySubscription.remove()
             lobbyRepository.leaveLobby(context, lobby.value!!)
-            LocalUtil.removeLobbyFromLocal(context)
+            deleteLobbyFromLocal()
             replaceFragment(
                 fragment = HomeFragment(),
                 shouldAddToBackStack = false
             )
         }
 
+    }
+
+    fun updateLobbyUser(snapshot: DocumentSnapshot){
+        viewModelScope.launch {
+            lobbyRepository.updateLobbyUser(context, lobby, snapshot)
+        }
     }
 
     fun openSettings(){
@@ -57,8 +66,9 @@ class LobbyViewModel(
     fun updateLobby(snapshot: DocumentSnapshot){
         var instance: LobbyViewModel = this
         viewModelScope.launch {
-            lobby.value = Lobby.loadSnapshot(context, snapshot)
-            lobbyRepository.subscribeUsers(context, lobby.value!!, users, instance)
+            lobby.value = Lobby.loadSnapshot(context, lobby.value!!.users, snapshot, false)
+            lobbyRepository.subscribeUsers(context, lobby, users, instance)
+            LocalUtil.addLobbyToLocal(context, lobby.value!!.code)
         }
     }
 
@@ -84,20 +94,24 @@ class LobbyViewModel(
         )
     }
 
+    fun addLobbyToLocal(){
+        LocalUtil.addLobbyToLocal(context, lobby.value!!.code)
+    }
+
+    fun deleteLobbyFromLocal(){
+        LocalUtil.removeLobbyFromLocal(context)
+    }
+
     fun vote(value: Int){
-        val sharedPreferences: SharedPreferences =
-            context.getSharedPreferences("local_user", Context.MODE_PRIVATE)
-
-
 
         viewModelScope.launch(Dispatchers.IO){
-            val result: Boolean = lobbyRepository.voteLobby(context, value)
+            val result: Boolean = lobbyRepository.voteLobby(context, value, lobby.value!!.code)
             withContext(Dispatchers.Main){
                 when(result){
                     true ->
-                        Toast.makeText(context, "Vote registered $value", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Vote registered $value", Toast.LENGTH_SHORT).show()
                     false ->
-                        Toast.makeText(context, "Error while voting", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Error while voting", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -113,15 +127,15 @@ class LobbyViewModel(
                 when(result){
                     true -> {
                         if(latestState){
-                            Toast.makeText(context, "Showing results", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Showing results", Toast.LENGTH_SHORT).show()
                         }else{
-                            Toast.makeText(context, "Resetting votes", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Resetting votes", Toast.LENGTH_SHORT).show()
                         }
                         // TODO: Check this
                         lobby.value!!.showResults = latestState
                     }
                     false -> {
-                        Toast.makeText(context, "Error while loading votes", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Error while loading votes", Toast.LENGTH_SHORT).show()
                         isError = true
                     }
                 }

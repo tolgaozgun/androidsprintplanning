@@ -38,7 +38,6 @@
         android:layout_marginTop="120dp"
         android:fontFamily="@font/roboto"
         android:text="@string/user_limit"
-        android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -50,7 +49,6 @@
         android:layout_marginTop="40dp"
         android:fontFamily="@font/roboto_bold"
         android:text="@string/room_settings"
-        android:textColor="@color/black"
         android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,7 +86,6 @@
         android:layout_marginTop="20dp"
         android:fontFamily="@font/roboto"
         android:text="@string/ask_to_join"
-        android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sl_user_limit" />

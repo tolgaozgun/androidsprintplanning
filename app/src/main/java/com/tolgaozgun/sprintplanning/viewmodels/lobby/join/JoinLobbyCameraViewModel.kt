@@ -18,7 +18,7 @@ class JoinLobbyCameraViewModel (
     private var lobbyRepository: LobbyRepository)
 : TransactionViewModel(fragmentManager = fragmentManager) {
 
-    fun joinRoom(shouldContinue: MutableLiveData<Boolean>, input: String): Boolean{
+    fun joinRoom(shouldContinue: MutableLiveData<Boolean>, input: String, isJoining: MutableLiveData<Boolean>): Boolean{
         var code: String = input.trim().uppercase()
         var shouldJoin: Boolean = false
 
@@ -27,14 +27,17 @@ class JoinLobbyCameraViewModel (
 
             when(result){
                 is Lobby ->{
+                    isJoining.postValue(false)
                     replaceFragment(
                         fragment = LobbyFragment(),
                         shouldAddToBackStack = true,
-                        arguments = LobbyUtil.createBundle(result)
+                        arguments = LobbyUtil.createBundle(result),
+                        uniqueName = "lobby_transaction"
                     )
                     shouldContinue.postValue(false)
                 }
                 else ->{
+                    isJoining.postValue(false)
                     shouldContinue.postValue(true)
                 }
 

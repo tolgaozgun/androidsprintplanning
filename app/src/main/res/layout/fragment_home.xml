@@ -17,7 +17,6 @@
         android:fontFamily="@font/roboto_medium"
         android:text="@string/join_room"
         android:textSize="16sp"
-        android:theme="@style/MainMenu.Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_sub_title" />
@@ -31,7 +30,6 @@
         android:fontFamily="@font/roboto_medium"
         android:text="@string/create_room"
         android:textSize="16sp"
-        android:theme="@style/MainMenu.Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_seperator" />

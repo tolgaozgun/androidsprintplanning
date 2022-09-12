@@ -20,7 +20,7 @@ class JoinLobbyViewModel(
     private var lobbyRepository: LobbyRepository)
     : TransactionViewModel(fragmentManager = fragmentManager) {
 
-    fun joinRoom(input: String): Boolean{
+    fun joinRoom(input: String, isJoining: MutableLiveData<Boolean>): Boolean{
         var code: String = input.trim().uppercase()
         var shouldJoin: Boolean = false
 
@@ -29,6 +29,7 @@ class JoinLobbyViewModel(
 
             when(result){
                 is Lobby ->{
+                    isJoining.postValue(false)
                     replaceFragment(
                         fragment = LobbyFragment(),
                         shouldAddToBackStack = true,
@@ -37,6 +38,7 @@ class JoinLobbyViewModel(
 //                    shouldContinue.postValue(false)
                 }
                 else ->{
+                    isJoining.postValue(false)
 //                    shouldContinue.postValue(true)
                 }
 

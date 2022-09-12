@@ -37,6 +37,7 @@ class LobbyFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        LobbyUtil.isInLobby = true
         binding = FragmentRoomBinding.inflate(inflater, container, false)
 
         val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
@@ -49,6 +50,7 @@ class LobbyFragment : Fragment() {
         setupUsersView()
         setupObserver()
 
+
         return binding.root
     }
 
@@ -58,7 +60,7 @@ class LobbyFragment : Fragment() {
             Log.d("LOBBY_OBSERVER", "Observing lobby livedata.. userCOunt: ${lobby.users.count()}")
 
             binding.txtTitle.text = lobby.code
-            binding.txtSubtitle.text = lobby.status.toString()
+            binding.txtSubtitle.text = lobby.status.value
             usersViewAdapter.updateList(lobby.users, lobby.showResults)
 
             var voted: Int = 0
@@ -67,7 +69,14 @@ class LobbyFragment : Fragment() {
                     voted++
             }
 
+            if(lobby.showResults){
+                binding.btnShowResults.setText(R.string.reset_vote)
+            }else{
+                binding.btnShowResults.setText(R.string.show_results)
+            }
+
             binding.txtVoteStatus.text = getString(R.string.vote_count, voted, lobby.users.count())
+            LobbyUtil.lobby?.postValue(lobby)
         })
     }
 
@@ -117,9 +126,9 @@ class LobbyFragment : Fragment() {
         // TODO: Check user permissions to display room settings
         // Only admins should be able to change room settings
         // (Should users be able to display them?)
-        binding.imgSettings.setOnClickListener{
-            viewModel.openSettings()
-        }
+//        binding.imgSettings.setOnClickListener{
+//            viewModel.openSettings()
+//        }
 
         binding.imgRoomShare.setOnClickListener{
             viewModel.openShare()

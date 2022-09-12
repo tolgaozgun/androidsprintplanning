@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tolgaozgun.sprintplanning.data.model.Lobby
 import com.tolgaozgun.sprintplanning.data.model.LobbyState
@@ -21,25 +22,25 @@ import java.util.*
 class CreateLobbyViewModel(
     fragmentManager: FragmentManager,
     private var context: Context,
-    private var mUserLimit: Int = 12,
-    private var mAskToJoin: Boolean = false,
+//    private var mUserLimit: Int = 12,
+//    private var mAskToJoin: Boolean = false,
     private var lobbyRepository: LobbyRepository,
 ) : TransactionViewModel(fragmentManager = fragmentManager) {
+//
+//    fun getUserLimit() : Int {
+//        return mUserLimit
+//    }
+//
+//    fun setUserLimit(userLimit: Int){
+//        mUserLimit = userLimit
+//    }
+//
+//    fun setAskToJoin(askToJoin: Boolean){
+//        mAskToJoin = askToJoin
+//    }
 
-    fun getUserLimit() : Int {
-        return mUserLimit
-    }
 
-    fun setUserLimit(userLimit: Int){
-        mUserLimit = userLimit
-    }
-
-    fun setAskToJoin(askToJoin: Boolean){
-        mAskToJoin = askToJoin
-    }
-
-
-    fun createLobby() {
+    fun createLobby(isCreating: MutableLiveData<Boolean>) {
         val timeNow = System.currentTimeMillis()
 
         val sharedPreferences: SharedPreferences =
@@ -52,11 +53,11 @@ class CreateLobbyViewModel(
         val userList = listOf<User>(User(UUID.fromString(idString), "Name", "avatarUrl", -1, false))
 
         val pendingLobby: Lobby = Lobby(
-            userLimit = mUserLimit,
-            askToJoin = mAskToJoin,
+//            userLimit = mUserLimit,
+//            askToJoin = mAskToJoin,
             id = UUID.randomUUID(),
             name = "Room",
-            status = LobbyState.WAITING,
+            status = LobbyState.VOTING,
             timeCreated = timeNow,
             timeUpdated = timeNow,
             code = LobbyUtil.createCode(),
@@ -65,17 +66,22 @@ class CreateLobbyViewModel(
         )
 
         viewModelScope.launch(Dispatchers.IO){
-            val result: Lobby = lobbyRepository.createLobby(context, pendingLobby)
+            val result: Lobby? = lobbyRepository.createLobby(context, pendingLobby)
             when(result){
-                is Lobby ->
+                is Lobby ->{
+                    isCreating.postValue(false)
                     replaceFragment(
                         fragment = LobbyFragment(),
                         shouldAddToBackStack = true,
-                        arguments = LobbyUtil.createBundle(result)
+                        arguments = LobbyUtil.createBundle(result),
+                        uniqueName = "lobby_transaction"
                     )
-                else ->
-                    // Error
-                    Toast.makeText(context, "Error occurred during connection", Toast.LENGTH_LONG).show()
+                }
+
+                else ->{
+                    isCreating.postValue(false)
+                    Toast.makeText(context, "Error occurred during connection", Toast.LENGTH_SHORT).show()
+                }
             }
 
         }

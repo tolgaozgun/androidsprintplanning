@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="avatar_images">
+        <item>@drawable/avatar_first</item>
+        <item>@drawable/avatar_second</item>
+        <item>@drawable/avatar_third</item>
+        <item>@drawable/avatar_forth</item>
+        <item>@drawable/avatar_fifth</item>
+        <item>@drawable/avatar_sixth</item>
+        <item>@drawable/avatar_seventh</item>
+        <item>@drawable/avatar_eighth</item>
+        <item>@drawable/avatar_ninth</item>
+        <item>@drawable/avatar_tenth</item>
+        <item>@drawable/avatar_eleventh</item>
+    </array>
+    <array name="themes">
+        <item>Light Theme</item>
+        <item>Dark Theme</item>
+        <item>System Default</item>
+    </array>
+</resources>

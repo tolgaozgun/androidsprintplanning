@@ -25,7 +25,7 @@ class ShareLobbyViewModel(
         ) as ClipboardManager
         val clipData = ClipData.newPlainText("text", code)
         clipboardManager.setPrimaryClip(clipData)
-        Toast.makeText(context, "Code copied to clipboard", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Code copied to clipboard", Toast.LENGTH_SHORT).show()
     }
 
     fun shareQRCode(code: String){

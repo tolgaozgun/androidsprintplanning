@@ -1,7 +1,11 @@
 package com.tolgaozgun.sprintplanning.repository
 
 import android.content.Context
+import android.net.Uri
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ListenerRegistration
 import com.tolgaozgun.sprintplanning.data.local.LobbyDatabase
 import com.tolgaozgun.sprintplanning.data.model.Lobby
@@ -36,16 +40,16 @@ class LobbyRepository(
         }
     }
 
-    suspend fun joinLobby(id: String, context: Context) : Lobby?{
-        return remoteDataSource.joinLobby(id, context)
+    suspend fun joinLobby(id: String, context: Context, isRejoining: Boolean = false) : Lobby?{
+        return remoteDataSource.joinLobby(id, context, isRejoining)
     }
 
-    suspend fun createLobby(context: Context, pendingLobby: Lobby) : Lobby{
+    suspend fun createLobby(context: Context, pendingLobby: Lobby) : Lobby?{
         return remoteDataSource.createLobby(context, pendingLobby)
     }
 
-    suspend fun voteLobby(context: Context, vote: Int): Boolean {
-        return remoteDataSource.vote(context, vote)
+    suspend fun voteLobby(context: Context, vote: Int, code: String): Boolean {
+        return remoteDataSource.vote(context, vote, code)
     }
 
     suspend fun subscribeLobby(context: Context, lobby: MutableLiveData<Lobby>,
@@ -54,17 +58,17 @@ class LobbyRepository(
         return remoteDataSource.subscribeLobby(context, lobby, viewModel)
     }
 
-    suspend fun loadUsersWithString(stringList: List<String>): List<User>{
+    suspend fun loadUsersWithString(context: Context, userList: List<User>?, stringList: List<String>, shouldLoadAvatar: Boolean = false): List<User>{
         val uuidList: MutableList<UUID> = mutableListOf()
 
         for(string in stringList){
             uuidList.add(UUID.fromString(string))
         }
-        return loadUsersWithUuid(uuidList.toList())
+        return loadUsersWithUuid(context, userList, uuidList.toList(), shouldLoadAvatar)
     }
 
-    suspend fun loadUsersWithUuid(uuidList: List<UUID>): List<User>{
-        return remoteDataSource.loadUsers(uuidList)
+    suspend fun loadUsersWithUuid(context: Context, userList: List<User>?, uuidList: List<UUID>, shouldLoadAvatar: Boolean = false): List<User>{
+        return remoteDataSource.loadUsers(context, userList, uuidList, shouldLoadAvatar)
     }
 
     suspend fun updateUser(context: Context): Boolean{
@@ -83,7 +87,7 @@ class LobbyRepository(
         return remoteDataSource.addLocalUser(context)
     }
 
-    suspend fun subscribeUsers(context: Context, lobby: Lobby,
+    suspend fun subscribeUsers(context: Context, lobby: MutableLiveData<Lobby>,
                                users: MutableLiveData<MutableMap<UUID, ListenerRegistration>>,
                                viewModel: LobbyViewModel){
         return remoteDataSource.subscribeUsers(context, lobby, users, viewModel)
@@ -91,6 +95,15 @@ class LobbyRepository(
 
     suspend fun getLobby(context: Context, code: String): Lobby?{
         return remoteDataSource.getLobby(context, code)
+    }
+
+    suspend fun uploadFile(context: Context, file: Uri): String?{
+        return remoteDataSource.uploadFile(context, file)
+    }
+
+    suspend fun updateLobbyUser(context: Context, lobby: MutableLiveData<Lobby>,
+                                snapshot: DocumentSnapshot){
+        return remoteDataSource.updateLobbyUser(context, lobby, snapshot)
     }
 
 }

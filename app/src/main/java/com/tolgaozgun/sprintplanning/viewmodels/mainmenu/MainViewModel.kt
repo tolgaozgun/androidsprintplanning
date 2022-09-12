@@ -1,5 +1,6 @@
 package com.tolgaozgun.sprintplanning.viewmodels.mainmenu
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
@@ -17,9 +18,10 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class MainViewModel(
-    fragmentManager: FragmentManager,
+    override var fragmentManager: FragmentManager,
     private val lobbyRepository: LobbyRepository,
 )   : TransactionViewModel(fragmentManager = fragmentManager) {
+
 
     fun checkFirstTime(context: Context){
         val sharedPreferences: SharedPreferences =
@@ -47,24 +49,6 @@ class MainViewModel(
 
     }
 
-    fun checkLobby(context: Context){
-        if(LocalUtil.isJoinedLobby(context)){
-            val code: String = LocalUtil.getLocalLobbyCode(context)!!
-            viewModelScope.launch {
-                when(val lobby: Lobby? = lobbyRepository.joinLobby(code, context)){
-                    is Lobby -> {
-                        Toast.makeText(context, "You were joined back to your previous lobby", Toast.LENGTH_SHORT).show()
-                        replaceFragment(
-                            fragment = LobbyFragment(),
-                            shouldAddToBackStack = true,
-                            arguments = LobbyUtil.createBundle(lobby)
-                        )
-                    }
-                    else -> {
-                        Toast.makeText(context, "Your previous lobby was disbanded, cannot join.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-    }
+
+
 }

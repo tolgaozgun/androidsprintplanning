@@ -1,7 +1,9 @@
 package com.tolgaozgun.sprintplanning.data.model
 
-enum class LobbyState {
+enum class LobbyState(public var value: String) {
 
-    VOTE_STARTED, VOTE_ENDED, WAITING
+    VOTING("Voting"),
+    VOTING_ENDED("Voting Ended")
+
 
 }

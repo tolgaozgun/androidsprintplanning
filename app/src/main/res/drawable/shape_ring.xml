@@ -7,6 +7,6 @@
     android:useLevel="false"
 >
 
-    <solid android:color="@color/green"/>
+    <solid android:color="@color/black"/>
 
 </shape>

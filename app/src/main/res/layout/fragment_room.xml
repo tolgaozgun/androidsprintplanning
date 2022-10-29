@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".room.RoomFragment">
+    tools:context=".views.lobby.LobbyFragment">
 
     <ImageView
         android:id="@+id/img_chat"
@@ -30,10 +30,10 @@
         android:id="@+id/txt_vote_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="31dp"
         android:layout_marginTop="20dp"
         android:fontFamily="@font/roboto_light"
-        android:text="18/22 players voted"
+        android:text="@string/vote_count"
         android:textColor="@color/black"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,19 +64,44 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.53"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linear_layout_vote" />
+        app:layout_constraintTop_toBottomOf="@+id/scroll_view_vote" />
+
 
     <LinearLayout
-        android:id="@+id/linear_layout_vote"
+        android:id="@+id/scroll_view_vote"
         android:layout_width="300dp"
         android:layout_height="124dp"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="36dp"
         android:layout_marginEnd="30dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recycler_view_users"/>
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_users">
+
+        <LinearLayout
+            android:id="@+id/linear_layout_vote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txt_vote"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/vote" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/linear_layout_vote_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:scrollbars="horizontal|none">
+
+            </androidx.recyclerview.widget.RecyclerView>
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linear_layout_room_header"
@@ -116,6 +141,18 @@
         android:layout_marginEnd="20dp"
         android:src="@drawable/share_from_square_solid"
         app:layout_constraintEnd_toStartOf="@+id/img_chat"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/img_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/_02_settings"
+        app:layout_constraintEnd_toStartOf="@+id/img_room_share"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/linear_layout_room_header"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

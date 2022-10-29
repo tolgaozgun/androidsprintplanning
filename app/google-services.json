@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "614125287534",
+    "project_id": "sprint-planning-c3f34",
+    "storage_bucket": "sprint-planning-c3f34.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614125287534:android:3f19449527c1220ce90e7f",
+        "android_client_info": {
+          "package_name": "com.tolgaozgun.sprintplanning"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "614125287534-9phve9m1b87kejqqk7nn9v424tto3uj0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXtvtqCl1dJRDb6SbLJL3N74E4bZczxUw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "614125287534-9phve9m1b87kejqqk7nn9v424tto3uj0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
